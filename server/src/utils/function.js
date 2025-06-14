@@ -12,6 +12,12 @@ export const getUser = async (email,db,table) => {
   return rows.length> 0 ? rows[0] : null
 }
 
+export const getUserFromId = async (id,db,table) => {
+  const query=`SELECT * FROM ${table} WHERE id = ?`
+  const [rows] = await db.query(query,[id]) 
+  return rows.length> 0 ? rows[0] : null
+}
+
 export const insertUser = async (name,email,hashedPassword,verifyToken,db) => {
   const verifyTokenExpiry = new Date(Date.now() + 10*60*1000)
   const query = `INSERT INTO users (name,email,password,verifyToken,verifyTokenExpiry) VALUES (?,?,?,?,?)`

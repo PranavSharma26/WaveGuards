@@ -34,3 +34,8 @@ export const updateIsVerified = async (email,db,table) => {
   const query = `UPDATE ${table} SET isVerified = TRUE WHERE email = ?`
   await db.query(query,[email])
 }
+
+export const deleteUserFunction = async (id,db,table) => {
+  const query = `DELETE FROM ${table} WHERE id = ?`
+  await db.query(query,[id])
+}

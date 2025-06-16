@@ -120,7 +120,13 @@ export const getMe = async (req, res) => {
 export const deleteUser = async (req, res) => {
   const db = await dbConnect()
   try {
-    const {id, role} = req.params
+    const token = req.cookies.token
+    if (!token) {
+      return res.status(400).json({ success: false, message: "Not Authenticated" });
+    }
+    const payload = jwt.verify(token, process.env.JWT_SECRET)
+    const id = payload.id
+    const role = payload.role
     if(!id) return res.status(400).json({success: false, message: "All fields are required"})
     const table = role==="user" ? "users" : "ngos"
     const user = await getUserFromId(id,db,table)

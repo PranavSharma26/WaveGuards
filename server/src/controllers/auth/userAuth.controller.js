@@ -61,7 +61,7 @@ export const verifyOTP = async (req, res) => {
 		}
 		const userOTP = user.verifyToken
 		if(userOTP!==otp){
-			return res.status(400).json({success: false, message: "Incorrect OTP"})
+			return res.status(401).json({success: false, message: "Incorrect OTP"})
 		}
 		await updateIsVerified(email,db,"users")
 		return res.status(200).json({success: true, message: "OTP verified successfully"})
@@ -86,7 +86,7 @@ export const userLogin = async (req, res) => {
       return res.status(400).json({ success: false, message: "No user exist" });
     }
 		if(!user.isVerified){
-			return res.status(400).json({ success: false, message: "User is not verified" });
+			return res.status(401).json({ success: false, message: "User is not verified" });
 		}
     if (!(await bcrypt.compare(password, user.password))) {
       return res

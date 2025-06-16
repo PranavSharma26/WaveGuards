@@ -1,7 +1,7 @@
 import express from 'express'
-import { userLogin, userSignup } from '../../controllers/auth/userAuth.controller.js'
-import { changePassword, deleteUser, forgotPassword, getMe, resendEmail, userLogout, verifyForgotPasswordOTP, verifyOTP } from '../../controllers/auth/commonAuth.controller.js'
-import { ngoLogin, ngoSignup } from '../../controllers/auth/ngoAuth.controller.js'
+import { userLogin, userSignup } from '../controllers/auth/userAuth.controller.js'
+import { changePassword, deleteUser, forgotPassword, getMe, resendEmail, userLogout, verifyForgotPasswordOTP, verifyOTP } from '../controllers/auth/commonAuth.controller.js'
+import { ngoLogin, ngoSignup } from '../controllers/auth/ngoAuth.controller.js'
 
 const router = express.Router()
 

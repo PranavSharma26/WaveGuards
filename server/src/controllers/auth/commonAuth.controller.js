@@ -1,9 +1,38 @@
 import jwt from "jsonwebtoken";
 import bcrypt from 'bcrypt'
 import dbConnect from "../../config/db.js";
-import { deleteUserFunction, generateOTP, getUser, getUserFromId, updateForgotPasswordTokenExpiry, updatePassword, updateTokenExpiry } from "../../utils/function.js";
+import { deleteUserFunction, generateOTP, getUser, getUserFromId, updateForgotPasswordTokenExpiry, updateIsVerified, updatePassword, updateTokenExpiry } from "../../utils/function.js";
 import { sendVerificationEmail } from "../../utils/sendVerificationEmail.js";
 import { sendForgotPasswordEmail } from "../../utils/sendForgotPasswordEmail.js";
+
+export const verifyOTP = async (req, res) => {
+	const db = await dbConnect()
+	try {
+		const {email,otp, role} = req.body
+		if(!email || !otp || !role) return res.status(400).json({ success: false, message: "All fields are required" });
+    const table = role==="user" ? "users" : "ngos"
+		const user = await getUser(email,db,table)
+		if(!user){
+			return res.status(400).json({ success: false, message: "No user exist" });
+		}
+		const currentDate = new Date()
+		const expiryDate = new Date(user.verifyTokenExpiry)
+		if(currentDate>expiryDate){
+			return res.status(400).json({success: false, message: "OTP expired. Please signup again!"})
+		}
+		const userOTP = user.verifyToken
+		if(userOTP!==otp){
+			return res.status(401).json({success: false, message: "Incorrect OTP"})
+		}
+		await updateIsVerified(email,db,table)
+		return res.status(200).json({success: true, message: "OTP verified successfully"})
+	} catch (error) {
+		console.log("Error verifying OTP", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+	}
+}
 
 export const resendEmail = async (req, res) => {
   const db = await dbConnect()

@@ -18,10 +18,16 @@ export const getUserFromId = async (id,db,table) => {
   return rows.length> 0 ? rows[0] : null
 }
 
-export const insertUser = async (name,email,hashedPassword,verifyToken,db) => {
+export const insertUser = async (name,email,phoneNumber,city,state,country,hashedPassword,verifyToken,db) => {
   const verifyTokenExpiry = new Date(Date.now() + 10*60*1000)
-  const query = `INSERT INTO users (name,email,password,verifyToken,verifyTokenExpiry) VALUES (?,?,?,?,?)`
-  await db.query(query,[name,email,hashedPassword,verifyToken,verifyTokenExpiry])
+  const query = `INSERT INTO users (name,email,phoneNumber,city,state,country,password,verifyToken,verifyTokenExpiry) VALUES (?,?,?,?,?,?,?,?,?)`
+  await db.query(query,[name,email,phoneNumber,city,state,country,hashedPassword,verifyToken,verifyTokenExpiry])
+}
+
+export const insertNGO = async (name,email,phoneNumber,address,city,state,country,hashedPassword,verifyToken,db) => {
+  const verifyTokenExpiry = new Date(Date.now() + 10*60*1000)
+  const query = `INSERT INTO ngos (name,email,phoneNumber,address,city,state,country,password,verifyToken,verifyTokenExpiry) VALUES (?,?,?,?,?,?,?,?,?,?)`
+  await db.query(query,[name,email,phoneNumber,address,city,state,country,hashedPassword,verifyToken,verifyTokenExpiry])
 }
 
 export const updateTokenExpiry = async (email,newVerifyToken,db,table) => {

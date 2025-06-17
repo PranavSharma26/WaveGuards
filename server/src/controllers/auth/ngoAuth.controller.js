@@ -16,10 +16,6 @@ export const ngoSignup = async (req, res) => {
       name,
       email,
       phoneNumber,
-      address,
-      country,
-      state,
-      city,
       password,
     } = req.body;
 
@@ -27,11 +23,7 @@ export const ngoSignup = async (req, res) => {
       !name ||
       !email ||
       !password ||
-      !phoneNumber ||
-			!address ||
-      !city ||
-      !state ||
-      !country
+      !phoneNumber
     )
       return res
         .status(400)
@@ -57,10 +49,6 @@ export const ngoSignup = async (req, res) => {
       name,
       email,
       phoneNumber,
-      address,
-      city,
-      state,
-      country,
       hashedPassword,
       otp,
       db,

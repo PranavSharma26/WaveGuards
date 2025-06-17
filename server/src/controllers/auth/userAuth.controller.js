@@ -12,17 +12,13 @@ import { sendVerificationEmail } from "../../utils/sendVerificationEmail.js";
 export const userSignup = async (req, res) => {
   const db = await dbConnect();
   try {
-    const { name, email, phoneNumber, country, state, city, password } =
+    const { name, email, phoneNumber, password } =
       req.body;
 
     if (
       !name ||
       !email ||
-      !password ||
-      !phoneNumber ||
-      !city ||
-      !state ||
-      !country
+      !password
     )
       return res
         .status(400)
@@ -48,9 +44,6 @@ export const userSignup = async (req, res) => {
       name,
       email,
       phoneNumber,
-      city,
-      state,
-      country,
       hashedPassword,
       otp,
       db,

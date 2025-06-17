@@ -25,8 +25,18 @@ const Signup = () => {
   const onSubmit = async (data) => {
 		try {
 			const res = await axios.post(`${backendURL}/api/user/signup`,data)
-			if(res.data.success) toast.success(res.data.message)
-			else toast.error(res.data.message)
+			if(!res.data.success) toast.error(res.data.message)
+			toast.success("Please verify your email")
+			
+			localStorage.removeItem("user")
+			const expiryTime = new Date() + 10*60*1000
+			localStorage.setItem("user",JSON.stringify({
+				data:{
+					email: data.email,
+					role: "user"
+				}, expiresAt: expiryTime
+			}))
+			navigate('/verify-email')
 		} catch (error) {
 			toast.error(error?.response?.data?.message)
 		}

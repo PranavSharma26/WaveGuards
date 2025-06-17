@@ -4,6 +4,7 @@ import PageNotFound from "./pages/PageNotFound"
 import Signup from "./pages/auth/Signup"
 import Login from "./pages/auth/Login"
 import { Toaster } from "react-hot-toast"
+import VerifyEmail from "./pages/auth/VerifyEmail"
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home/>} />
         <Route path="/signup" element={<Signup/>} />
+        <Route path="/verify-email" element={<VerifyEmail/>} />
         <Route path="/login" element={<Login/>} />
         <Route path="*" element={<PageNotFound/>} />
       </Routes>

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
-import {backendURL} from '../../utils/getBackendURL.js'
+import axios from "axios";
+import { backendURL } from "../../utils/getBackendURL.js";
 import toast from "react-hot-toast";
 
 const VerifyEmail = () => {
@@ -12,30 +12,64 @@ const VerifyEmail = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm();
-
+  const [isResending, setIsResending] = useState(false)
   const navigate = useNavigate();
+  const [resendTime, setResendTime] = useState(new Date(Date.now() + 30000));
 
-  const handleResendOTP = () => {
+  const user =
+    JSON.parse(localStorage.getItem("user")) ||
+    JSON.parse(localStorage.getItem("ngo"));
 
-  }
+  const handleResendOTP = async () => {
+    setIsResending(true)
+    try {
+      if (!user) {
+        toast.error("No User Found");
+        setIsResending(false)
+        return;
+      }
+      const currentTime = new Date();
+      if (currentTime < resendTime) {
+        const diff = Math.ceil((resendTime - currentTime) / 1000);
+        toast.error(`Wait for ${diff} seconds before resending.`);
+        setIsResending(false)
+        return;
+      } else {
+        const finalData = {
+          email: user.data.email,
+          role: user.data.role,
+        };
+        const res = await axios.post(
+          `${backendURL}/api/resend-email`,
+          finalData
+        );
+        if (!res.data.success) toast.error(res.data.message);
+        toast.success(res.data.message);
+        setResendTime(new Date(Date.now() + 30000));
+        setIsResending(false)
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    }
+  };
 
   const onSubmit = async (data) => {
-		try {
-      const user = JSON.parse(localStorage.getItem("user"))
-      const enteredOTP = data.otp
+    try {
+      const enteredOTP = data.otp;
       const finalData = {
-        email:user.data.email, 
-        otp:enteredOTP, 
-        role:user.data.role
-      }
-			const res = await axios.post(`${backendURL}/api/verify-otp`,finalData)
-			if(!res.data.success) toast.error(res.data.message)
-      localStorage.clear("user")
-			toast.success(res.data.message)
-			navigate('/login')
-		} catch (error) {
-			toast.error(error?.response?.data?.message)
-		}
+        email: user.data.email,
+        otp: enteredOTP,
+        role: user.data.role,
+      };
+      const res = await axios.post(`${backendURL}/api/verify-otp`, finalData);
+      if (!res.data.success) toast.error(res.data.message);
+      localStorage.removeItem("user");
+      localStorage.removeItem("ngo");
+      toast.success(res.data.message);
+      navigate("/login");
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
   };
 
   return (
@@ -58,9 +92,7 @@ const VerifyEmail = () => {
           autoComplete="off"
         >
           <div className="flex flex-col">
-            <label className="text-sm mb-1 pl-1 text-gray-700">
-              Enter OTP
-            </label>
+            <label className="text-sm mb-1 pl-1 text-gray-700">Enter OTP</label>
             <input
               {...register("otp", {
                 required: "OTP is Required",
@@ -95,9 +127,15 @@ const VerifyEmail = () => {
             {isSubmitting ? "Verifying..." : "Submit"}
           </button>
         </form>
-        <div className="text-blue-500 text-sm text-center mt-5" onClick={handleResendOTP}>
-					<span className="hover:underline hover:cursor-pointer hover:text-blue-700">Didn't received the email? Resend OTP</span>
-				</div>
+        <div className="text-blue-500 text-sm text-center mt-5">
+          <button
+            onClick={handleResendOTP}
+            disabled={isResending}
+            className={`hover:underline hover:cursor-pointer hover:text-blue-700 `}
+          >
+            Didn't received the email? Resend OTP
+          </button>
+        </div>
       </div>
     </div>
   );

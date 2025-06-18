@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
-import {backendURL} from '../../utils/getBackendURL.js'
+import axios from "axios";
+import { backendURL } from "../../utils/getBackendURL.js";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import toast, {Toaster} from 'react-hot-toast'
+import toast, { Toaster } from "react-hot-toast";
 
 const Signup = () => {
   const {
@@ -15,32 +15,49 @@ const Signup = () => {
     formState: { errors, isSubmitting },
   } = useForm();
   const [showPassword, setShowPassword] = useState(false);
+  const [role, setRole] = useState("user");
+  const [isUser, setIsUser] = useState(true);
 
   const navigate = useNavigate();
+
+  const toggleRole = (newRole) => {
+    setRole(newRole);
+  };
 
   const toggleShowPassword = () => {
     setShowPassword((prev) => !prev);
   };
 
   const onSubmit = async (data) => {
-		try {
-			const res = await axios.post(`${backendURL}/api/user/signup`,data)
-			if(!res.data.success) toast.error(res.data.message)
-			toast.success("Please verify your email")
-			
-			localStorage.removeItem("user")
-			const expiryTime = new Date() + 10*60*1000
-			localStorage.setItem("user",JSON.stringify({
-				data:{
-					email: data.email,
-					role: "user"
-				}, expiresAt: expiryTime
-			}))
-			navigate('/verify-email')
-		} catch (error) {
-			toast.error(error?.response?.data?.message)
-		}
+    try {
+      const endpoint = 
+        isUser?'/api/user/signup':'/api/ngo/signup'
+      const res = await axios.post(`${backendURL}${endpoint}`, data);
+      if (!res.data.success) toast.error(res.data.message);
+      toast.success("Please verify your email");
+
+      localStorage.removeItem("user");
+      localStorage.removeItem("ngo");
+      const expiryTime = new Date() + 10 * 60 * 1000;
+      localStorage.setItem(
+        isUser ? "user" : "ngo",
+        JSON.stringify({
+          data: {
+            email: data.email,
+            role: isUser ? "user" : "ngo",
+          },
+          expiresAt: expiryTime,
+        })
+      );
+      navigate("/verify-email");
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Internal Server Error");
+    }
   };
+
+  useEffect(() => {
+    setIsUser(() => (role === "user" ? true : false));
+  }, [role]);
 
   return (
     <div className="bg-gradient-to-br from-sky-100 via-sky-200 to-sky-100 h-screen w-screen flex flex-col items-center justify-center px-4">
@@ -50,12 +67,35 @@ const Signup = () => {
           onClick={() => navigate("/")}
         />
       </div>
-
-      <div className="bg-white p-8 md:p-10 border border-white rounded-2xl shadow-xl w-full max-w-md hover:ring-2 ring-white transition duration-300 ease-in-out">
+      <div className="relative bg-white p-8 md:p-10 border border-white rounded-2xl shadow-2xl w-full max-w-md hover:ring-2 ring-white transition duration-300 ease-in-out">
+      <div className="absolute p-1 w-28 text-center bg-white rounded-t-xl -top-8 right-4">
+        {isUser ? "User" : "NGO"}
+      </div>
         <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">
           Signup
         </h1>
-
+        <div className="pb-3 flex justify-center gap-5 text-gray-700">
+          <div className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="user"
+              id="user"
+              checked={role === "user"}
+              onChange={() => toggleRole("user")}
+            />
+            <p>User</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="ngo"
+              id="ngo"
+              checked={role === "ngo"}
+              onChange={() => toggleRole("ngo")}
+            />
+            <p>NGO</p>
+          </div>
+        </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="w-full flex flex-col gap-6 "
@@ -63,7 +103,7 @@ const Signup = () => {
         >
           <div className="flex flex-col">
             <label className="text-sm mb-1 pl-1 text-gray-700">
-              Enter Name
+              {isUser ? "Enter Name" : "Enter NGO Name"}
             </label>
             <input
               {...register("name", {
@@ -119,6 +159,10 @@ const Signup = () => {
             </label>
             <input
               {...register("phoneNumber", {
+                minLength: {
+                  value: 5,
+                  message: "Enter a valid phone number",
+                },
                 pattern: {
                   value: /^[0-9 ]+$/,
                   message: "Enter a valid phone number",
@@ -141,6 +185,14 @@ const Signup = () => {
             <input
               {...register("password", {
                 required: "Password is Required",
+                minLength: {
+                  value: 5,
+                  message: "Minimum 5 characters are required",
+                },
+                maxLength: {
+                  value: 30,
+                  message: "Maximum 30 characters allowed",
+                },
               })}
               type={showPassword ? "text" : "password"}
               className="bg-white border border-gray-300 rounded-md p-2 px-3 focus:ring-2 focus:ring-teal-300 outline-none text-sm transition pr-10"
@@ -151,9 +203,6 @@ const Signup = () => {
             >
               {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
             </div>
-						<div className="text-sm text-blue-500 text-end pt-1">
-							<span className=" hover:underline hover:cursor-pointer hover:text-blue-700">Forgot Password?</span>
-						</div>
             {errors.password && (
               <p className="pl-1 text-red-500 text-sm mt-1">
                 {errors.password.message}
@@ -173,9 +222,14 @@ const Signup = () => {
             {isSubmitting ? "Signing up..." : "Signup"}
           </button>
         </form>
-				<div className="text-blue-500 text-sm text-center mt-5">
-					<span className="hover:underline hover:cursor-pointer hover:text-blue-700">Already have an account? Log in</span>
-				</div>
+        <div className="text-blue-500 text-sm text-center mt-5">
+          <span
+            className="hover:underline hover:cursor-pointer hover:text-blue-700"
+            onClick={() => navigate("/login")}
+          >
+            Already have an account? Log in
+          </span>
+        </div>
       </div>
     </div>
   );

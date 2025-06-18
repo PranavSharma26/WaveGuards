@@ -28,8 +28,11 @@ export const userSignup = async (req, res) => {
     if (user) {
       const currentDate = new Date();
       const expiryDate = new Date(user.verifyTokenExpiry);
-      if (user.isVerified || expiryDate > currentDate) {
-        return res.status(400).json({ success: false, message: "User Exists" });
+      if (
+          user.isVerified ||
+          expiryDate > currentDate
+        ) {
+        return res.status(400).json({ success: false, message: "Email Exists" });
       }
       const newOtp = generateOTP();
       await updateTokenExpiry(email, newOtp, db, "users");

@@ -4,25 +4,25 @@ import { backendURL } from "../../utils/getBackendURL.js";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-const UserContext = createContext();
+const NgoContext = createContext();
 
-export const UserProvider = ({ children }) => {
+export const NgoProvider = ({ children }) => {
   const navigate = useNavigate()
-  const [user, setUser] = useState(null);
-  const [userLoading, setUserLoading] = useState(true);
+  const [ngo, setNgo] = useState(null);
+  const [ngoLoading, setNgoLoading] = useState(true);
 
-  const loginUser = (userData) => {
-    setUser(userData);
+  const loginNgo = (ngoData) => {
+    setNgo(ngoData);
   };
 
-  const logoutUser = async () => {
+  const logoutNgo = async () => {
     try {
       const res = await axios.post(
         `${backendURL}/api/logout`,
         {},
         { withCredentials: true }
       );
-      setUser(null);
+      setNgo(null);
       toast.success("Logged Out");
       navigate('/')
     } catch (error) {
@@ -31,28 +31,28 @@ export const UserProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchNgo = async () => {
       try {
         const res = await axios.get(`${backendURL}/api/me`, {
           withCredentials: true,
         });
-        const userData = { ...res.data.data, role: res.data.role };
-        setUser(userData);
+        const ngoData = { ...res.data.data, role: res.data.role };
+        setNgo(ngoData);
       } catch (error) {
         console.log("Please Log In");
-        setUser(null);
+        setNgo(null);
       } finally {
-        setUserLoading(false);
+        setNgoLoading(false);
       }
     };
-    fetchUser();
+    fetchNgo();
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, userLoading, loginUser, logoutUser }}>
+    <NgoContext.Provider value={{ ngo, ngoLoading, loginNgo, logoutNgo }}>
       {children}
-    </UserContext.Provider>
+    </NgoContext.Provider>
   );
 };
 
-export const userAuth = () => useContext(UserContext);
+export const ngoAuth = () => useContext(NgoContext);

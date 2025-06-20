@@ -8,6 +8,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import toast from "react-hot-toast";
 import { userAuth } from "../../context/user/UserContext.jsx";
+import { ngoAuth } from "../../context/ngo/NgoContext.jsx";
 
 const Login = () => {
   const {
@@ -18,7 +19,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState("user");
   const [isUser, setIsUser] = useState(true);
-  const {loginUser} = userAuth()
+  const { loginUser } = userAuth();
+  const { loginNgo } = ngoAuth();
 
   const navigate = useNavigate();
 
@@ -32,19 +34,25 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-      const endpoint = isUser ? '/api/user/login':'/api/ngo/login'
+      const endpoint = isUser ? "/api/user/login" : "/api/ngo/login";
       const finalData = {
         email: data.email,
-        password: data.password
-      }
-      const res = await axios.post(`${backendURL}${endpoint}`, finalData, {withCredentials: true});
+        password: data.password,
+      };
+
+      const res = await axios.post(`${backendURL}${endpoint}`, finalData, {
+        withCredentials: true,
+      });
       if (!res.data.success) toast.error(res.data.message);
-      
+
       toast.success("Log In Successful");
 
-      const response = await axios.get(`${backendURL}/api/me`, {withCredentials: true})
-				const userData = {...response.data.data, role: response.data.role}
-				loginUser(userData)
+      const response = await axios.get(`${backendURL}/api/me`, {
+        withCredentials: true,
+      });
+      const userData = { ...response.data.data, role: response.data.role };
+
+      isUser ? loginUser(userData) : loginNgo(userData);
 
       navigate("/");
     } catch (error) {
@@ -87,7 +95,7 @@ const Login = () => {
             <input
               type="radio"
               name="user"
-              id="user"
+              id="ngo"
               checked={role === "ngo"}
               onChange={() => toggleRole("ngo")}
             />
@@ -147,7 +155,10 @@ const Login = () => {
               {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
             </div>
             <div className="text-sm text-blue-500 text-end pt-1">
-              <span className=" hover:underline hover:cursor-pointer hover:text-blue-700">
+              <span
+                className=" hover:underline hover:cursor-pointer hover:text-blue-700"
+                onClick={() => navigate("/forgot-password")}
+              >
                 Forgot Password?
               </span>
             </div>

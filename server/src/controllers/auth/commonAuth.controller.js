@@ -187,7 +187,7 @@ export const verifyForgotPasswordOTP = async (req, res) => {
     if(otp !== user.forgotPasswordToken){
       return res.status(401).json({success:false, message: "Incorrect OTP"})
     }
-    return res.status(200).json({success: true, message: "OTP correct"})
+    return res.status(200).json({success: true, message: "OTP correct", id:user.id})
   } catch (error) {
     console.log("Error in verifying forgot password", error)
     return res

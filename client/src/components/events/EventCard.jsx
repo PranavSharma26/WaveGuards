@@ -1,0 +1,77 @@
+import React from "react";
+import { userAuth } from "../../context/user/UserContext";
+import { ngoAuth } from "../../context/ngo/NgoContext";
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
+import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+import StarIcon from '@mui/icons-material/Star';
+import { useNavigate } from "react-router-dom";
+
+const EventCard = ({event}) => {
+  const navigate = useNavigate();
+  const { user, userLoading } = userAuth();
+  const { ngo, ngoLoading } = ngoAuth();
+  const profile = user || ngo;
+  if (userLoading || ngoLoading) {
+    return (
+      <div className="max-w-md mx-auto p-6 bg-white rounded-xl shadow animate-pulse">
+        <div className="h-6 bg-gray-300 rounded w-3/4 mb-4" />
+        <div className="h-4 bg-gray-200 rounded w-full mb-2" />
+        <div className="h-4 bg-gray-200 rounded w-5/6 mb-4" />
+        <div className="h-4 bg-gray-100 rounded w-1/2" />
+      </div>
+    );
+  }
+
+  if (!profile) return null
+  const role = profile.role;
+
+  return (
+    <div className="max-w-md mx-auto bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6 space-y-4 border border-gray-100">
+      <div>
+        <h2 className="text-2xl font-bold text-gray-800">Tech Meetup 2025</h2>
+        <p className="text-gray-600 mt-1">
+          An evening of networking, tech talks, and community building with fellow innovators.
+        </p>
+      </div>
+
+      <div className="space-y-2 text-sm text-gray-700">
+        <div className="flex items-center gap-2">
+          <LocationOnOutlinedIcon fontSize="small" className="text-blue-400" />
+          <span>New Delhi, India</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <CalendarTodayOutlinedIcon fontSize="small" className="text-green-600" />
+          <span>March 15, 2025</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <AccessTimeOutlinedIcon fontSize="small" className="text-yellow-600" />
+          <span>5:00 PM - 9:00 PM</span>
+        </div>
+      </div>
+
+      <div className="flex justify-between items-center mt-4">
+        <div className="flex items-center gap-2 text-blue-500 font-medium text-sm">
+          <PeopleAltOutlinedIcon fontSize="small" />
+          <span>100 volunteers joined</span>
+        </div>
+        <div className="flex items-center gap-1 text-yellow-500 font-medium text-sm">
+          <StarIcon fontSize="small" />
+          <span>4.8</span>
+        </div>
+      </div>
+
+      {role === "user" && (
+        <button
+          onClick={() => navigate("/events/tech-meetup-2025")}
+          className="w-full mt-4 bg-gradient-to-r from-sky-600 to-sky-500 text-white py-2 rounded-lg font-semibold hover:from-sky-700 hover:to-sky-600 transition-all duration-200"
+        >
+          Join Now
+        </button>
+      )}
+    </div>
+  );
+};
+
+export default EventCard;

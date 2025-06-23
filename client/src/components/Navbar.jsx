@@ -4,6 +4,7 @@ import { userAuth } from "../context/user/UserContext";
 import { ngoAuth } from "../context/ngo/NgoContext";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import SettingsIcon from '@mui/icons-material/Settings';
+import EventIcon from '@mui/icons-material/Event';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 export const Navbar = () => {
@@ -22,6 +23,10 @@ export const Navbar = () => {
   const handleAccountClick = () => {
     setShowDropdownMenu(false)
     navigate(`/account/${isUser ? "user":"ngo"}`)
+  };
+  const handleEventsClick = () => {
+    setShowDropdownMenu(false)
+    navigate(`/events`)
   };
   const handleSettingsClick = () => {
     setShowDropdownMenu(false)
@@ -69,6 +74,10 @@ export const Navbar = () => {
                 <li className="my-1 hover:bg-gray-100 pr-3 pl-2 py-2 rounded-lg  hover:cursor-pointer flex items-center gap-3" onClick={handleAccountClick}>
                  <AccountCircleOutlinedIcon/>
                  <p>Account</p>
+                </li>
+                <li className="my-1 hover:bg-gray-100 pr-3 pl-2 py-2 rounded-lg  hover:cursor-pointer flex items-center gap-3" onClick={handleEventsClick}>
+                 <EventIcon/>
+                 <p>Events</p>
                 </li>
                 <li className="my-1 hover:bg-gray-100 pr-3 pl-2 py-2 rounded-lg  hover:cursor-pointer flex items-center gap-3" onClick={handleSettingsClick}>
                  <SettingsIcon/>

@@ -10,6 +10,7 @@ import Settings from "./pages/Settings"
 import ForgotPassword from "./pages/auth/ForgotPassword"
 import ChangePassword from "./pages/auth/ChangePassword"
 import UserProtectedRoutes from './context/user/UserProtectedRoutes'
+import EventsPage from './pages/common/EventsPage'
 import PublicProtectedRoutes from "./context/PublicProtectedRoutes"
 import SharedProtectedRoutes from "./context/SharedProtectedRoutes"
 
@@ -27,9 +28,10 @@ function App() {
         <Route path="/forgot-password" element={<PublicProtectedRoutes><ForgotPassword/></PublicProtectedRoutes>}/>
         <Route path="/change-password" element={<ChangePassword/>}/>
         
-        // USER
+        // COMMON
         <Route path="/account/:role" element={<SharedProtectedRoutes> <Account/> </SharedProtectedRoutes>} />
         <Route path="/settings/:role" element={<SharedProtectedRoutes> <Settings/> </SharedProtectedRoutes>} />
+        <Route path="/events" element={<EventsPage/>} />
 
         <Route path="*" element={<PageNotFound/>} />
       </Routes>

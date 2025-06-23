@@ -15,6 +15,33 @@ export const UserProvider = ({ children }) => {
     setUser(userData);
   };
 
+  const updateUserName = async (newName) => {
+    try {
+      const res = await axios.patch(`${backendURL}/api/update/name`,{id: user.id, newName: newName, role: "user"},{withCredentials: true})
+      toast.success(res.data.message)
+    } catch (error) {
+      toast.error(error || "Error Updating Bio")
+    }
+  }
+
+  const updateUserBio = async (newBio) => {
+    try {
+      const res = await axios.patch(`${backendURL}/api/update/bio`,{id: user.id, newBio: newBio, role: "user"},{withCredentials: true})
+      toast.success(res.data.message)
+    } catch (error) {
+      toast.error(error || "Error Updating Bio")
+    }
+  }
+
+  const updateUserPhone = async (newPhone) => {
+    try {
+      const res = await axios.patch(`${backendURL}/api/update/phoneNumber`,{id: user.id, newPhoneNumber: newPhone, role: "user"},{withCredentials: true})
+      toast.success(res.data.message)
+    } catch (error) {
+      toast.error(error || "Error Updating Phone")
+    }
+  }
+
   const logoutUser = async () => {
     try {
       const res = await axios.post(
@@ -49,7 +76,7 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, userLoading, loginUser, logoutUser }}>
+    <UserContext.Provider value={{ user, setUser, userLoading, loginUser, updateUserBio, updateUserPhone, updateUserName, logoutUser }}>
       {children}
     </UserContext.Provider>
   );

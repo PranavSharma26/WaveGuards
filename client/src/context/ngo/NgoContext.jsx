@@ -15,6 +15,33 @@ export const NgoProvider = ({ children }) => {
     setNgo(ngoData);
   };
 
+  const updateNgoName = async (newName) => {
+    try {
+      const res = await axios.patch(`${backendURL}/api/update/name`,{id: ngo.id, newName: newName, role: "ngo"},{withCredentials: true})
+      toast.success(res.data.message)
+    } catch (error) {
+      toast.error(error || "Error Updating Bio")
+    }
+  }
+
+  const updateNgoBio = async (newBio) => {
+    try {
+      const res = await axios.patch(`${backendURL}/api/update/bio`,{id: ngo.id, newBio: newBio, role: "ngo"},{withCredentials: true})
+      toast.success(res.data.message)
+    } catch (error) {
+      toast.error(error || "Error Updating Bio")
+    }
+  }
+
+  const updateNgoPhone = async (newPhone) => {
+    try {
+      const res = await axios.patch(`${backendURL}/api/update/phoneNumber`,{id: ngo.id, newPhoneNumber: newPhone, role: "ngo"},{withCredentials: true})
+      toast.success(res.data.message)
+    } catch (error) {
+      toast.error(error || "Error Updating Phone")
+    }
+  }
+
   const logoutNgo = async () => {
     try {
       const res = await axios.post(
@@ -49,7 +76,7 @@ export const NgoProvider = ({ children }) => {
   }, []);
 
   return (
-    <NgoContext.Provider value={{ ngo, ngoLoading, loginNgo, logoutNgo }}>
+    <NgoContext.Provider value={{ ngo, setNgo, ngoLoading, loginNgo, updateNgoBio, updateNgoPhone, updateNgoName, logoutNgo }}>
       {children}
     </NgoContext.Provider>
   );

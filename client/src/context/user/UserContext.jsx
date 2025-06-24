@@ -42,6 +42,15 @@ export const UserProvider = ({ children }) => {
     }
   }
 
+  const updateUserAddress = async (newAddress) => {
+    try {
+      const res = await axios.patch(`${backendURL}/api/update/address`,{id: user.id, address: newAddress.address, city: newAddress.city, state: newAddress.state, country: newAddress.country, role: "user"},{withCredentials: true})
+      toast.success(res.data.message)
+    } catch (error) {
+      toast.error(error || "Error Updating Location")
+    }
+  }
+
   const logoutUser = async () => {
     try {
       const res = await axios.post(
@@ -76,7 +85,7 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, userLoading, loginUser, updateUserBio, updateUserPhone, updateUserName, logoutUser }}>
+    <UserContext.Provider value={{ user, setUser, userLoading, loginUser, updateUserBio, updateUserPhone, updateUserName, updateUserAddress, logoutUser }}>
       {children}
     </UserContext.Provider>
   );

@@ -42,6 +42,15 @@ export const NgoProvider = ({ children }) => {
     }
   }
 
+  const updateNgoAddress = async (newAddress) => {
+    try {
+      const res = await axios.patch(`${backendURL}/api/update/address`,{id: ngo.id, address: newAddress.address, city: newAddress.city, state: newAddress.state, country: newAddress.country, role: "ngo"},{withCredentials: true})
+      toast.success(res.data.message)
+    } catch (error) {
+      toast.error(error || "Error Updating Location")
+    }
+  }
+
   const logoutNgo = async () => {
     try {
       const res = await axios.post(
@@ -76,7 +85,7 @@ export const NgoProvider = ({ children }) => {
   }, []);
 
   return (
-    <NgoContext.Provider value={{ ngo, setNgo, ngoLoading, loginNgo, updateNgoBio, updateNgoPhone, updateNgoName, logoutNgo }}>
+    <NgoContext.Provider value={{ ngo, setNgo, ngoLoading, loginNgo, updateNgoBio, updateNgoPhone, updateNgoName, updateNgoAddress, logoutNgo }}>
       {children}
     </NgoContext.Provider>
   );

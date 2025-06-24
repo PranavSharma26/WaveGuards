@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DoneOutlineOutlinedIcon from "@mui/icons-material/DoneOutlineOutlined";
+import { Country, State, City } from "country-state-city";
 
 const Account = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const Account = () => {
     updateUserBio,
     updateUserPhone,
     updateUserName,
+    updateUserAddress,
     logoutUser,
   } = userAuth();
   const {
@@ -23,6 +25,7 @@ const Account = () => {
     updateNgoBio,
     updateNgoPhone,
     updateNgoName,
+    updateNgoAddress,
     logoutNgo,
   } = ngoAuth();
   if (userLoading || ngoLoading) {
@@ -48,6 +51,14 @@ const Account = () => {
   const [isEditingPhone, setIsEditingPhone] = useState(false);
   const [name, setName] = useState(profile.name);
   const [isEditingName, setIsEditingName] = useState(false);
+  const [allCity, setAllCity] = useState([]);
+  const [allState, setAllState] = useState([]);
+  const [allCountry, setAllCountry] = useState([]);
+
+  const [city, setCity] = useState(profile.city);
+  const [state, setState] = useState(profile.state);
+  const [country, setCountry] = useState(profile.country);
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
 
   const handleEditName = async () => {
     if (!isEditingName) {
@@ -63,6 +74,7 @@ const Account = () => {
       setIsEditingName(false);
     }
   };
+  
   const handleEditBio = async () => {
     if (!isEditingBio) {
       setIsEditingBio(true);
@@ -103,10 +115,51 @@ const Account = () => {
     }
   };
 
+  const handleEditAddress = async () => {
+    if (!isEditingAddress) {
+      setIsEditingAddress(true);
+    } else {
+      if (city !== profile.city) {
+        const newAddress = {
+          address: "Address",
+          city: city.name,
+          state: state.name,
+          country: country.name,
+        };
+        console.log(newAddress)
+        if (role === "user") {
+          await updateUserAddress(newAddress);
+        } else {
+          await updateNgoAddress(newAddress);
+        }
+        window.location.reload()
+      }
+      setIsEditingAddress(false);
+    }
+  };
+
   const handleLogout = async () => {
     role === "user" ? await logoutUser() : await logoutNgo();
     navigate("/");
   };
+
+  useEffect(() => {
+    setAllCountry(Country.getAllCountries());
+  }, []);
+  useEffect(() => {
+    if (country && country.isoCode) {
+      setAllState(State.getStatesOfCountry(country.isoCode));
+    } else {
+      setAllState([]);
+    }
+  }, [country]);
+  useEffect(() => {
+    if (country?.isoCode && state?.isoCode) {
+      setAllCity(City.getCitiesOfState(country.isoCode, state.isoCode));
+    } else {
+      setAllCity([]);
+    }
+  }, [country,state]);
 
   return (
     <>
@@ -180,18 +233,96 @@ const Account = () => {
             </div>
 
             <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-600 dark:text-gray-300">
-              <div>
-                <span className="font-semibold">City:</span>{" "}
-                {profile?.city || "N/A"}
-              </div>
-              <div>
-                <span className="font-semibold">State:</span>{" "}
-                {profile?.state || "N/A"}
-              </div>
-              <div>
+              <div className="flex gap-2">
                 <span className="font-semibold">Country:</span>{" "}
-                {profile?.country || "N/A"}
+                {isEditingAddress ? (
+                  <div>
+                    <select
+                      name="country"
+                      className="w-40"
+                      onChange={(e) => {
+                        const selected = allCountry.find(
+                          (c) => c.name === e.target.value
+                        );
+                        setCountry(selected);
+                        setState(null);
+                        setCity(null);
+                      }}
+                    >
+                      {allCountry.map((c) => (
+                        <option key={c.isoCode || c.name} value={c.name}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : (
+                  <>{profile?.country || "N/A"}</>
+                )}
               </div>
+              <div className="flex gap-2">
+                <span className="font-semibold">State:</span>{" "}
+                {isEditingAddress ? (
+                  <div>
+                    <select
+                      name="state"
+                      className="w-40"
+                      onChange={(e) => {
+                        const selected = allState.find(
+                          (s) => s.name === e.target.value
+                        );
+                        setState(selected);
+                        setCity(null);
+                      }}
+                    >
+                      {allState.map((s) => (
+                        <option key={s.isoCode || s.name} value={s.name}>
+                          {s.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : (
+                  <>{profile?.state || "N/A"}</>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <span className="font-semibold">City:</span>{" "}
+                {isEditingAddress ? (
+                  <div>
+                    <select
+                      name="city"
+                      className="w-40"
+                      onChange={(e) => {
+                        const selected = allCity.find(
+                          (c) => c.name === e.target.value
+                        );
+                        setCity(selected);
+                      }}
+                    >
+                      {allCity.map((c) => (
+                        <option key={c.isoCode || c.name} value={c.name}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : (
+                  <>{profile?.city|| "N/A"}</>
+                )}
+                {isEditingAddress ? (
+                  <DoneOutlineOutlinedIcon
+                    className="hover:cursor-pointer hover:scale-105 hover:text-teal-600"
+                    onClick={handleEditAddress}
+                  />
+                ) : (
+                  <EditOutlinedIcon
+                    className="hover:cursor-pointer hover:scale-105 hover:text-sky-700"
+                    onClick={handleEditAddress}
+                  />
+                )}
+              </div>
+
               <div>
                 <span className="font-semibold">Points:</span>{" "}
                 {profile?.points || 0}

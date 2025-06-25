@@ -45,7 +45,7 @@ export const NgoProvider = ({ children }) => {
   const updateNgoAddress = async (newAddress) => {
     try {
       const res = await axios.patch(`${backendURL}/api/update/address`,{id: ngo.id, address: newAddress.address, city: newAddress.city, state: newAddress.state, country: newAddress.country, role: "ngo"},{withCredentials: true})
-      toast.success(res.data.message)
+      toast.success("Address Updated Successfully")
     } catch (error) {
       toast.error(error || "Error Updating Location")
     }

@@ -7,12 +7,14 @@ import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import StarIcon from '@mui/icons-material/Star';
 import { useNavigate } from "react-router-dom";
+import { getDate, getTime } from "../../utils/function.js";
 
-const EventCard = ({event}) => {
+const EventCard = ({ event }) => {
   const navigate = useNavigate();
   const { user, userLoading } = userAuth();
   const { ngo, ngoLoading } = ngoAuth();
   const profile = user || ngo;
+
   if (userLoading || ngoLoading) {
     return (
       <div className="max-w-md mx-auto p-6 bg-white rounded-xl shadow animate-pulse">
@@ -24,34 +26,30 @@ const EventCard = ({event}) => {
     );
   }
 
-  if (!profile) return null
+  if (!profile) return null;
   const role = profile.role;
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6 space-y-4 border border-gray-100">
+    <div className="w-full sm:min-w-[300px] sm:max-w-md mx-auto bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6 space-y-4 border border-gray-100 min-h-[300px]">
       <div>
-        <h2 className="text-2xl font-bold text-gray-800">Tech Meetup 2025</h2>
-        <p className="text-gray-600 mt-1 overflow line-clamp-4">
-          An evening of networking, tech talks, and 
-          An evening of networking, tech talks, and. 
-          An evening of networking, tech talks, and. 
-          An evening of networking, tech talks, and. 
-          An evening of networking, tech talks, and.  
+        <h2 className="text-2xl font-bold text-gray-800">{event.title}</h2>
+        <p className="text-gray-600 mt-1 line-clamp-3 min-h-[75px]">
+          {event.description}
         </p>
       </div>
 
       <div className="space-y-2 text-sm text-gray-700">
         <div className="flex items-center gap-2">
           <LocationOnOutlinedIcon fontSize="small" className="text-blue-400" />
-          <span>New Delhi, India</span>
+          <span>{event.location}</span>
         </div>
         <div className="flex items-center gap-2">
           <CalendarTodayOutlinedIcon fontSize="small" className="text-green-600" />
-          <span>March 15, 2025</span>
+          <span>{getDate(event.start_time)}</span>
         </div>
         <div className="flex items-center gap-2">
           <AccessTimeOutlinedIcon fontSize="small" className="text-yellow-600" />
-          <span>5:00 PM - 9:00 PM</span>
+          <span>{getTime(event.start_time)}</span>
         </div>
       </div>
 

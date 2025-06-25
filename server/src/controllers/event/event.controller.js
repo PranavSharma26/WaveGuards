@@ -1,5 +1,5 @@
 import dbConnect from "../../config/db.js";
-import { deleteEvent, getEvent, insertEvent, isEventExist, updateEvent } from "../../utils/function.js";
+import { deleteEvent, fetchOngoingEvents, fetchPastEvents, fetchUpcomingEvents, insertEvent, isEventExist, updateEvent } from "../../utils/function.js";
 
 export const postEventController = async (req, res) => {
   const db = await dbConnect();
@@ -53,21 +53,65 @@ export const postEventController = async (req, res) => {
     console.log("Error Posting Event", error);
     return res
       .status(500)
-      .json({ success: false, message: "Internal Servel Error" });
+      .json({ success: false, message: "Internal Server Error" });
   }
 };
 
-export const getEventController = async (req, res) => {
+export const getEventsController = async (req, res) => {
   const db = await dbConnect()
   try {
-    const event_id = req.params.id
-    const event = await getEvent(event_id,db)
+    const upcomingEvents = await fetchUpcomingEvents(db)
+    const ongoingEvents = await fetchOngoingEvents(db)
+    const pastEvents = await fetchPastEvents(db)
+    return res.status(200).json({success: true, data:{
+      upcomingEvents : upcomingEvents,
+      ongoingEvents: ongoingEvents,
+      pastEvents: pastEvents
+    }, message: "Events Fetched Successfully"})
+  } catch (error) {
+    console.log("Error Fetching Event", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+
+export const getUpcomingEventController = async (req, res) => {
+  const db = await dbConnect()
+  try {
+    const event = await fetchUpcomingEvents(db)
     return res.status(200).json({success: true, data:event, message:"Fetched Event"})
   } catch (error) {
     console.log("Error Fetching Event", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Servel Error" });
+  }
+}
+
+export const getOngoingEventController = async (req, res) => {
+  const db = await dbConnect()
+  try {
+    const event = await fetchOngoingEvents(db)
+    return res.status(200).json({success: true, data:event, message:"Fetched Event"})
+  } catch (error) {
+    console.log("Error Fetching Event", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Servel Error" });
+  }
+}
+
+export const getPastEventController = async (req, res) => {
+  const db = await dbConnect()
+  try {
+    const event = await fetchPastEvents(db)
+    return res.status(200).json({success: true, data:event, message:"Fetched Event"})
+  } catch (error) {
+    console.log("Error Fetching Event", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
   }
 }
 
@@ -120,7 +164,7 @@ export const updateEventController = async (req, res) => {
     console.log("Error Updating Event", error);
     return res
       .status(500)
-      .json({ success: false, message: "Internal Servel Error" });
+      .json({ success: false, message: "Internal Server Error" });
   }
 }
 
@@ -134,6 +178,6 @@ export const deleteEventController = async (req, res) => {
     console.log("Error Deleting Event", error);
     return res
       .status(500)
-      .json({ success: false, message: "Internal Servel Error" });
+      .json({ success: false, message: "Internal Server Error" });
   }
 }

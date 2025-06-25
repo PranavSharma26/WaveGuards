@@ -59,8 +59,8 @@ export const createTables = async (db) => {
 			country VARCHAR(30),
 			locationLink VARCHAR(255),
 			status VARCHAR(10) DEFAULT 'upcoming',
-			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (ngo_id) REFERENCES ngos(id) ON DELETE CASCADE ON UPDATE CASCADE
 		);	
 	`);

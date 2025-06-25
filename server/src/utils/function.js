@@ -4,80 +4,206 @@ export const createDatabase = async (connection) => {
   );
 };
 
-export const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
+export const generateOTP = () =>
+  Math.floor(100000 + Math.random() * 900000).toString();
 
-export const getUser = async (email,db,table) => {
-  const query=`SELECT * FROM ${table} WHERE email = ?`
-  const [rows] = await db.query(query,[email]) 
-  return rows.length> 0 ? rows[0] : null
+export const getUser = async (email, db, table) => {
+  const query = `SELECT * FROM ${table} WHERE email = ?`;
+  const [rows] = await db.query(query, [email]);
+  return rows.length > 0 ? rows[0] : null;
+};
+
+export const getUserFromId = async (id, db, table) => {
+  const query = `SELECT * FROM ${table} WHERE id = ?`;
+  const [rows] = await db.query(query, [id]);
+  return rows.length > 0 ? rows[0] : null;
+};
+
+export const insertUser = async (
+  name,
+  email,
+  phoneNumber,
+  hashedPassword,
+  verifyToken,
+  db,
+) => {
+  const verifyTokenExpiry = new Date(Date.now() + 10 * 60 * 1000);
+  const query = `INSERT INTO users (name,email,phoneNumber,password,verifyToken,verifyTokenExpiry) VALUES (?,?,?,?,?,?)`;
+  await db.query(query, [
+    name,
+    email,
+    phoneNumber,
+    hashedPassword,
+    verifyToken,
+    verifyTokenExpiry,
+  ]);
+};
+
+export const insertNGO = async (
+  name,
+  email,
+  phoneNumber,
+  hashedPassword,
+  verifyToken,
+  db,
+) => {
+  const verifyTokenExpiry = new Date(Date.now() + 10 * 60 * 1000);
+  const query = `INSERT INTO ngos (name,email,phoneNumber,password,verifyToken,verifyTokenExpiry) VALUES (?,?,?,?,?,?)`;
+  await db.query(query, [
+    name,
+    email,
+    phoneNumber,
+    hashedPassword,
+    verifyToken,
+    verifyTokenExpiry,
+  ]);
+};
+
+export const updateTokenExpiry = async (email, newVerifyToken, db, table) => {
+  const newExpiry = new Date(Date.now() + 10 * 60 * 1000);
+  const query = `UPDATE ${table} SET verifyToken = ? , verifyTokenExpiry = ? WHERE email = ?`;
+  await db.query(query, [newVerifyToken, newExpiry, email]);
+};
+
+export const updateForgotPasswordTokenExpiry = async (
+  email,
+  newForgotPasswordToken,
+  db,
+  table,
+) => {
+  const newExpiry = new Date(Date.now() + 10 * 60 * 1000);
+  const query = `UPDATE ${table} SET forgotPasswordToken = ? , forgotPasswordTokenExpiry = ? WHERE email = ?`;
+  await db.query(query, [newForgotPasswordToken, newExpiry, email]);
+};
+
+export const updateIsVerified = async (email, db, table) => {
+  const query = `UPDATE ${table} SET isVerified = TRUE WHERE email = ?`;
+  await db.query(query, [email]);
+};
+
+export const deleteUserFunction = async (id, db, table) => {
+  const query = `DELETE FROM ${table} WHERE id = ?`;
+  await db.query(query, [id]);
+};
+
+export const updatePassword = async (id, newPassword, db, table) => {
+  const query = `UPDATE ${table} SET password = ? WHERE id = ?`;
+  await db.query(query, [newPassword, id]);
+};
+
+export const updateBio = async (id, newBio, db, table) => {
+  const query = `UPDATE ${table} SET bio = ? WHERE id = ?`;
+  await db.query(query, [newBio, id]);
+};
+
+export const updateName = async (id, newName, db, table) => {
+  const query = `UPDATE ${table} SET name = ? WHERE id = ?`;
+  await db.query(query, [newName, id]);
+};
+
+export const updatePhoneNumber = async (id, newPhoneNumber, db, table) => {
+  const query = `UPDATE ${table} SET phoneNumber = ? WHERE id = ?`;
+  await db.query(query, [newPhoneNumber, id]);
+};
+
+export const updateUserAddress = async (
+  id,
+  city,
+  state,
+  country,
+  db,
+  table,
+) => {
+  const query = `UPDATE ${table} SET city = ?, state = ?, country = ? WHERE id = ?`;
+  await db.query(query, [city, state, country, id]);
+};
+
+export const updateNGOAddress = async (
+  id,
+  address,
+  city,
+  state,
+  country,
+  db,
+  table,
+) => {
+  const query = `UPDATE ${table} SET address = ?, city = ?, state = ?, country = ? WHERE id = ?`;
+  await db.query(query, [address, city, state, country, id]);
+};
+
+export const isEventExist = async (title, ngo_id, db) => {
+  const query = `SELECT * FROM events WHERE title = ? AND ngo_id = ?`;
+  const [rows] = await db.query(query, [title, ngo_id]);
+  return rows.length > 0 ? true : false;
+};
+
+export const insertEvent = async (
+  title,
+  description,
+  start_time,
+  end_time,
+  location,
+  city,
+  state,
+  country,
+  locationLink,
+  ngo_id,
+  db,
+) => {
+  const query = `
+    INSERT INTO events (title,description,start_time,end_time,location,city,state,country,locationLink,ngo_id)
+    VALUES (?,?,?,?,?,?,?,?,?,?)
+  `;
+  await db.query(query, [
+    title,
+    description,
+    start_time,
+    end_time,
+    location,
+    city,
+    state,
+    country,
+    locationLink,
+    ngo_id,
+  ]);
+};
+
+export const getEvent = async (id,db) => {
+  const query = `SELECT * FROM events WHERE id = ?`
+  const [rows] = await db.query(query,[id])
+  return rows.length > 0 ? rows[0] : null 
 }
 
-export const getUserFromId = async (id,db,table) => {
-  const query=`SELECT * FROM ${table} WHERE id = ?`
-  const [rows] = await db.query(query,[id]) 
-  return rows.length> 0 ? rows[0] : null
-}
+export const updateEvent = async (
+  title,
+  description,
+  start_time,
+  end_time,
+  location,
+  city,
+  state,
+  country,
+  locationLink,
+  event_id,
+  db,
+) => {
+  const query = `
+    UPDATE events set title=?,description=?,start_time=?,end_time=?,location=?,city=?,state=?,country=?,locationLink=? WHERE id = ?`;
+  await db.query(query, [
+    title,
+    description,
+    start_time,
+    end_time,
+    location,
+    city,
+    state,
+    country,
+    locationLink,
+    event_id
+  ]);
+};
 
-export const insertUser = async (name,email,phoneNumber,hashedPassword,verifyToken,db) => {
-  const verifyTokenExpiry = new Date(Date.now() + 10*60*1000)
-  const query = `INSERT INTO users (name,email,phoneNumber,password,verifyToken,verifyTokenExpiry) VALUES (?,?,?,?,?,?)`
-  await db.query(query,[name,email,phoneNumber,hashedPassword,verifyToken,verifyTokenExpiry])
-}
-
-export const insertNGO = async (name,email,phoneNumber,hashedPassword,verifyToken,db) => {
-  const verifyTokenExpiry = new Date(Date.now() + 10*60*1000)
-  const query = `INSERT INTO ngos (name,email,phoneNumber,password,verifyToken,verifyTokenExpiry) VALUES (?,?,?,?,?,?)`
-  await db.query(query,[name,email,phoneNumber,hashedPassword,verifyToken,verifyTokenExpiry])
-}
-
-export const updateTokenExpiry = async (email,newVerifyToken,db,table) => {
-  const newExpiry = new Date(Date.now() + 10*60*1000)
-  const query = `UPDATE ${table} SET verifyToken = ? , verifyTokenExpiry = ? WHERE email = ?`
-  await db.query(query,[newVerifyToken,newExpiry,email])
-}
-
-export const updateForgotPasswordTokenExpiry = async (email,newForgotPasswordToken,db,table) => {
-  const newExpiry = new Date(Date.now() + 10*60*1000)
-  const query = `UPDATE ${table} SET forgotPasswordToken = ? , forgotPasswordTokenExpiry = ? WHERE email = ?`
-  await db.query(query,[newForgotPasswordToken,newExpiry,email])
-}
-
-export const updateIsVerified = async (email,db,table) => {
-  const query = `UPDATE ${table} SET isVerified = TRUE WHERE email = ?`
-  await db.query(query,[email])
-}
-
-export const deleteUserFunction = async (id,db,table) => {
-  const query = `DELETE FROM ${table} WHERE id = ?`
+export const deleteEvent = async (id,db) => {
+  const query = `DELETE FROM events WHERE id = ?`
   await db.query(query,[id])
-}
-
-export const updatePassword = async (id,newPassword,db,table) => {
-  const query = `UPDATE ${table} SET password = ? WHERE id = ?`
-  await db.query(query,[newPassword,id])
-}
-
-export const updateBio = async (id,newBio,db,table) => {
-  const query = `UPDATE ${table} SET bio = ? WHERE id = ?`
-  await db.query(query,[newBio,id])
-}
-
-export const updateName = async (id,newName,db,table) => {
-  const query = `UPDATE ${table} SET name = ? WHERE id = ?`
-  await db.query(query,[newName,id])
-}
-
-export const updatePhoneNumber = async (id,newPhoneNumber,db,table) => {
-  const query = `UPDATE ${table} SET phoneNumber = ? WHERE id = ?`
-  await db.query(query,[newPhoneNumber,id])
-}
-
-export const updateUserAddress = async (id,city,state,country,db,table) => {
-  const query = `UPDATE ${table} SET city = ?, state = ?, country = ? WHERE id = ?`
-  await db.query(query,[city,state,country,id])
-}
-
-export const updateNGOAddress = async (id,address,city,state,country,db,table) => {
-  const query = `UPDATE ${table} SET address = ?, city = ?, state = ?, country = ? WHERE id = ?`
-  await db.query(query,[address,city,state,country,id])
 }

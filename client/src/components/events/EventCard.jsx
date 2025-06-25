@@ -31,8 +31,12 @@ const EventCard = ({event}) => {
     <div className="max-w-md mx-auto bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6 space-y-4 border border-gray-100">
       <div>
         <h2 className="text-2xl font-bold text-gray-800">Tech Meetup 2025</h2>
-        <p className="text-gray-600 mt-1">
-          An evening of networking, tech talks, and community building with fellow innovators.
+        <p className="text-gray-600 mt-1 overflow line-clamp-4">
+          An evening of networking, tech talks, and 
+          An evening of networking, tech talks, and. 
+          An evening of networking, tech talks, and. 
+          An evening of networking, tech talks, and. 
+          An evening of networking, tech talks, and.  
         </p>
       </div>
 
@@ -61,7 +65,12 @@ const EventCard = ({event}) => {
           <span>4.8</span>
         </div>
       </div>
-
+      <div className="text-sm text-gray-500 flex gap-2">
+        <p>Organized By:</p>
+        <span className="hover:cursor-pointer hover:underline hover:text-gray-700">
+          Beach Trust Ltd.
+        </span>
+      </div>
       {role === "user" && (
         <button
           onClick={() => navigate("/events/tech-meetup-2025")}

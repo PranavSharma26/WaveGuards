@@ -22,7 +22,7 @@ export const createTables = async (db) => {
 				updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )
   `);
-	await db.query(`
+  await db.query(`
 		CREATE TABLE IF NOT EXISTS ngos(
 			id INT AUTO_INCREMENT PRIMARY KEY,
 			name VARCHAR(30),
@@ -44,5 +44,24 @@ export const createTables = async (db) => {
 			createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 		)
-`);
+	`);
+  await db.query(`
+		CREATE TABLE IF NOT EXISTS events(
+			id INT AUTO_INCREMENT PRIMARY KEY,
+			title VARCHAR(255) NOT NULL,
+			description TEXT,
+			ngo_id int NOT NULL,
+			start_time TIMESTAMP NOT NULL,
+			end_time TIMESTAMP,
+			location VARCHAR(50),
+			city VARCHAR(30),
+			state VARCHAR(30),
+			country VARCHAR(30),
+			locationLink VARCHAR(255),
+			status VARCHAR(10) DEFAULT 'upcoming',
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (ngo_id) REFERENCES ngos(id) ON DELETE CASCADE ON UPDATE CASCADE
+		);	
+	`);
 };

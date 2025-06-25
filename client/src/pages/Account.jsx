@@ -141,6 +141,7 @@ const Account = () => {
   const handleLogout = async () => {
     role === "user" ? await logoutUser() : await logoutNgo();
     navigate("/");
+    window.location.reload()
   };
 
   useEffect(() => {

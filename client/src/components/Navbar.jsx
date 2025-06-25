@@ -36,6 +36,7 @@ export const Navbar = () => {
     setShowDropdownMenu(false)
     isUser ? await logoutUser() : await logoutNgo()
     navigate('/')
+    window.location.reload()
   };
 
   useEffect(()=>{

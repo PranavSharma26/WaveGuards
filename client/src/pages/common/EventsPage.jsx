@@ -6,6 +6,7 @@ import { eventAuth } from '../../context/event/EventContext';
 const EventsPage = () => {
   const { upcomingEvents, ongoingEvents, pastEvents } = eventAuth();
   const [activeTab, setActiveTab] = useState('upcoming'); 
+  
   const handlePostEvent = () => {
     
   };

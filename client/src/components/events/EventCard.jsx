@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { userAuth } from "../../context/user/UserContext";
 import { ngoAuth } from "../../context/ngo/NgoContext";
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
-import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
-import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
-import StarIcon from '@mui/icons-material/Star';
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
+import StarIcon from "@mui/icons-material/Star";
 import { useNavigate } from "react-router-dom";
 import { getDate, getTime } from "../../utils/function.js";
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import axios from "axios";
+import { eventAuth } from "../../context/event/EventContext.jsx";
 
 const EventCard = ({ event }) => {
   const navigate = useNavigate();
@@ -30,14 +32,50 @@ const EventCard = ({ event }) => {
 
   if (!profile) return null;
   const role = profile.role;
+  const {likeEvent, unlikeEvent} = eventAuth()
+  const [like, setLike] = useState(event.isLiked);
+  const [likeCount, setLikeCount] = useState(event.like)
+  // TODO : time gap of 10 sec. before sending request to server
+  const handleLikeEvent = async () => {
+    setLike(true)
+    setLikeCount(likeCount+1)
+    await likeEvent(profile.id, event.id)
+  }
+  const handleUnlikeEvent = async () => {
+    setLike(false)
+    setLikeCount(likeCount-1)
+    await unlikeEvent(profile.id, event.id)
+  }
 
   return (
     <div className="w-full sm:min-w-[300px] sm:max-w-md mx-auto bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6 space-y-4 border border-gray-100 min-h-[300px]">
-      <div>
-        <h2 className="text-2xl font-bold text-gray-800">{event.title}</h2>
+  <div className="-mt-6 -mx-6">
+    <img
+      src={event.image || "https://www.texasdisposal.com/wp-content/uploads/2024/10/ocean-pollution-23.jpg"}
+      alt={event.title}
+      className="w-full h-48 object-cover rounded-t-2xl"
+    />
+  </div>
+      <div className="relative">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">{event.title}</h2>
         <p className="text-gray-600 mt-1 line-clamp-3 min-h-[75px]">
           {event.description}
         </p>
+        {role === "user" ? (
+          <div className="absolute top-0 right-0 text-[12px] text-center">
+            {like ? (
+              <FavoriteIcon className=" text-red-500 hover:cursor-pointer" onClick={handleUnlikeEvent}/>
+            ) : (
+              <FavoriteBorderIcon className=" text-red-500 hover:cursor-pointer" onClick={handleLikeEvent}/>
+            )}
+            <p className="text-gray-500">{likeCount}</p>
+          </div>
+        ) : (
+          <div className="absolute top-0 right-0 text-[12px] text-center">
+            <FavoriteBorderIcon className=" text-red-500" />
+            <p className="text-gray-500">{likeCount}</p>
+          </div>
+        )}
       </div>
 
       <div className="space-y-2 text-sm text-gray-700">
@@ -46,11 +84,17 @@ const EventCard = ({ event }) => {
           <span>{event.location}</span>
         </div>
         <div className="flex items-center gap-2">
-          <CalendarTodayOutlinedIcon fontSize="small" className="text-green-600" />
+          <CalendarTodayOutlinedIcon
+            fontSize="small"
+            className="text-green-600"
+          />
           <span>{getDate(event.start_time)}</span>
         </div>
         <div className="flex items-center gap-2">
-          <AccessTimeOutlinedIcon fontSize="small" className="text-yellow-600" />
+          <AccessTimeOutlinedIcon
+            fontSize="small"
+            className="text-yellow-600"
+          />
           <span>{getTime(event.start_time)}</span>
         </div>
       </div>
@@ -60,10 +104,12 @@ const EventCard = ({ event }) => {
           <PeopleAltOutlinedIcon fontSize="small" />
           <span>100 volunteers joined</span>
         </div>
-        <div className="flex items-center gap-1 text-yellow-500 font-medium text-sm">
-          <StarIcon fontSize="small" />
-          <span>4.8</span>
-        </div>
+        {event.status !== "upcoming" && (
+          <div className="flex items-center gap-1 text-yellow-500 font-medium text-sm">
+            <StarIcon fontSize="small" />
+            <span>{event.rating || '-'}</span>
+          </div>
+        )}
       </div>
       <div className="text-sm text-gray-500 flex gap-2">
         <p>Organized By:</p>
@@ -71,7 +117,7 @@ const EventCard = ({ event }) => {
           Beach Trust Ltd.
         </span>
       </div>
-      {role === "user" && (
+      {role === "user" && event.status === "upcoming" && (
         <button
           onClick={() => navigate("/events/tech-meetup-2025")}
           className="w-full mt-4 bg-gradient-to-r from-sky-600 to-sky-500 text-white py-2 rounded-lg font-semibold hover:from-sky-700 hover:to-sky-600 transition-all duration-200"

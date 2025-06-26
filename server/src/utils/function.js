@@ -169,27 +169,54 @@ export const insertEvent = async (
 };
 
 export const fetchUpcomingEvents = async (db) => {
-  const current_time = new Date(Date.now())
-  const query = `SELECT * FROM events WHERE start_time > ? ORDER BY updatedAt DESC`;
-  const [rows] = await db.query(query,[current_time])
-  return rows.length > 0 ? rows : null 
-}
+  const current_time = new Date();
+    await db.query(
+    `UPDATE events SET status = 'upcoming' WHERE start_time > ?`,
+    [current_time]
+  );
+  const [rows] = await db.query(
+    `SELECT * FROM events WHERE status = 'upcoming' ORDER BY updatedAt DESC`
+  );
+  return rows.length > 0 ? rows : null;
+};
 
 export const fetchOngoingEvents = async (db) => {
-  const current_time = new Date(Date.now())
-  const twoHoursAgo = new Date(Date.now()-(2*60*60*1000))
-  const query = `SELECT * FROM events WHERE start_time < ? AND (( end_time IS NOT NULL AND end_time > ? ) OR (end_time IS NULL AND start_time > ? )) ORDER BY updatedAt DESC`;
-  const [rows] = await db.query(query,[current_time,current_time,twoHoursAgo])
-  return rows.length > 0 ? rows : null 
-}
+  const current_time = new Date();
+  const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+  await db.query(
+    `UPDATE events 
+     SET status = 'ongoing' 
+     WHERE start_time < ? 
+     AND (
+       (end_time IS NOT NULL AND end_time > ?) 
+       OR (end_time IS NULL AND start_time > ?)
+     )`,
+    [current_time, current_time, twoHoursAgo]
+  );
+  const [rows] = await db.query(
+    `SELECT * FROM events WHERE status = 'ongoing' ORDER BY updatedAt DESC`
+  );
+  return rows.length > 0 ? rows : null;
+};
 
 export const fetchPastEvents = async (db) => {
-  const current_time = new Date(Date.now())
-  const twoHoursAgo = new Date(Date.now()-(2*60*60*1000))
-  const query = `SELECT * FROM events WHERE (end_time IS NOT NULL AND end_time < ?) OR (end_time IS NULL AND start_time < ?) ORDER BY updatedAt DESC`;
-  const [rows] = await db.query(query,[current_time,twoHoursAgo])
-  return rows.length > 0 ? rows : null 
-}
+  const current_time = new Date();
+  const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+  await db.query(
+    `UPDATE events 
+     SET status = 'past' 
+     WHERE 
+       (end_time IS NOT NULL AND end_time < ?) 
+       OR 
+       (end_time IS NULL AND start_time < ?)`,
+    [current_time, twoHoursAgo]
+  );
+  const [rows] = await db.query(
+    `SELECT * FROM events WHERE status = 'past' ORDER BY updatedAt DESC`
+  );
+  return rows.length > 0 ? rows : null;
+};
+
 
 export const updateEvent = async (
   title,
@@ -250,4 +277,10 @@ export const fetchRating = async (event_id, db) => {
   const query = `SELECT ROUND(AVG(rating),1) AS rating FROM ratings WHERE event_id = ?`
   const [rows] = await db.query(query,[event_id])
   return rows.length > 0 ? rows[0].rating : 0
+}
+
+export const isUserLiked = async (user_id, event_id, db) => {
+  const query = `SELECT * FROM likes WHERE user_id = ? AND event_id = ?`
+  const [rows] = await db.query(query,[user_id,event_id])
+  return rows.length > 0 ? true : false
 }

@@ -8,6 +8,8 @@ import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import StarIcon from '@mui/icons-material/Star';
 import { useNavigate } from "react-router-dom";
 import { getDate, getTime } from "../../utils/function.js";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 const EventCard = ({ event }) => {
   const navigate = useNavigate();

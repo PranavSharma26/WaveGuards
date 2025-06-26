@@ -224,3 +224,30 @@ export const deleteEvent = async (id,db) => {
   const query = `DELETE FROM events WHERE id = ?`
   await db.query(query,[id])
 }
+
+export const likeEvent = async (user_id, event_id, db) => {
+  const query = `INSERT INTO likes(user_id, event_id) VALUES (?,?)`
+  await db.query(query,[user_id, event_id])
+}
+
+export const unlikeEvent = async (user_id, event_id, db) => {
+  const query = `DELETE FROM likes WHERE user_id = ? AND event_id = ?`
+  await db.query(query,[user_id, event_id])
+}
+
+export const fetchTotalLikes = async (event_id, db) => {
+  const query = `SELECT COUNT(*) AS totalLikes FROM likes WHERE event_id = ?`
+  const [rows] = await db.query(query,[event_id])
+  return rows.length > 0 ? rows[0].totalLikes : 0
+}
+
+export const rateEvent = async (user_id, event_id, rating, db) => {
+  const query = `INSERT INTO ratings(user_id, event_id, rating) VALUES (?,?,?)`
+  await db.query(query,[user_id, event_id, rating])
+}
+
+export const fetchRating = async (event_id, db) => {
+  const query = `SELECT ROUND(AVG(rating),1) AS rating FROM ratings WHERE event_id = ?`
+  const [rows] = await db.query(query,[event_id])
+  return rows.length > 0 ? rows[0].rating : 0
+}

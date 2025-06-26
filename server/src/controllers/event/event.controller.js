@@ -1,5 +1,5 @@
 import dbConnect from "../../config/db.js";
-import { deleteEvent, fetchOngoingEvents, fetchPastEvents, fetchUpcomingEvents, insertEvent, isEventExist, updateEvent } from "../../utils/function.js";
+import { deleteEvent, fetchOngoingEvents, fetchPastEvents, fetchRating, fetchTotalLikes, fetchUpcomingEvents, insertEvent, isEventExist, likeEvent, rateEvent, unlikeEvent, updateEvent } from "../../utils/function.js";
 
 export const postEventController = async (req, res) => {
   const db = await dbConnect();
@@ -179,5 +179,65 @@ export const deleteEventController = async (req, res) => {
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
+  }
+}
+
+export const likeEventController = async (req, res) => {
+  const db = await dbConnect()
+  try {
+      const {user_id, event_id} = req.body
+      await likeEvent(user_id, event_id, db)
+      return res.status(201).json({success: true, message: "Event Liked"})
+  } catch (error) {
+      console.log("Error in liking event", error)
+      return res.status(500).json({success: false, message: "Internal server error"});
+  }
+}
+
+export const unlikeEventController = async (req, res) => {
+  const db = await dbConnect()
+  try {
+      const {user_id, event_id} = req.body
+      await unlikeEvent(user_id, event_id, db)
+      return res.status(200).json({success: true, message: "Event Unliked"})
+  } catch (error) {
+      console.log("Error in unliking event", error)
+      return res.status(500).json({success: false, message: "Internal server error"});
+  }
+}
+
+export const getTotalLikesController = async (req, res) => {
+  const db = await dbConnect()
+  try {
+    const event_id = req.params.id
+    const totalLikes = await fetchTotalLikes(event_id,db)
+    return res.status(200).json({success: true, totalLikes: totalLikes, message: "Successfully fetched total likes"})
+  } catch (error) {
+    console.log("Error in fetching total likes", error)
+    return res.status(500).json({success: false, message: "Internal server error"});
+  }
+} 
+
+export const rateEventController = async (req, res) => {
+  const db = await dbConnect()
+  try {
+    const {user_id, event_id, rating} = req.body
+    await rateEvent(user_id, event_id, rating, db)
+    return res.status(201).json({success: true, message: "Event Rated"})
+  } catch (error) {
+    console.log("Error in rating event", error)
+    return res.status(500).json({success: false, message: "Internal server error"});
+  }
+}
+
+export const fetchEventRatingController = async (req, res) => {
+  const db = await dbConnect()
+  try {
+    const event_id = req.params.id
+    const rating = await fetchRating(event_id,db)
+    return res.status(200).json({success: true, rating: rating , message: "Fetch rating successfully"})
+  } catch (error) {
+    console.log("Error in fetching the rating", error)
+    return res.status(500).json({success: false, message: "Internal server error"});
   }
 }

@@ -12,6 +12,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
 import { eventAuth } from "../../context/event/EventContext.jsx";
+import { backendURL } from "../../utils/getBackendURL.js";
 
 const EventCard = ({ event }) => {
   const navigate = useNavigate();
@@ -51,7 +52,11 @@ const EventCard = ({ event }) => {
     <div className="w-full sm:min-w-[300px] sm:max-w-md mx-auto bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6 space-y-4 border border-gray-100 min-h-[300px]">
   <div className="-mt-6 -mx-6">
     <img
-      src={event.image || "https://www.texasdisposal.com/wp-content/uploads/2024/10/ocean-pollution-23.jpg"}
+      src={
+        event.image
+          ? `${backendURL}/api/event/image/${event.id}`
+          : "https://www.texasdisposal.com/wp-content/uploads/2024/10/ocean-pollution-23.jpg"
+      }
       alt={event.title}
       className="w-full h-48 object-cover rounded-t-2xl"
     />

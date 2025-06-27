@@ -35,7 +35,7 @@ export const EventProvider = ({ children }) => {
       setOngoingEvents(res.data.data.ongoingEvents);
       setPastEvents(res.data.data.pastEvents);
     } catch (error) {
-      toast.error("Error fetching events");
+      return;
     }
   };
 

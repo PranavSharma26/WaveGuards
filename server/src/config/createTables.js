@@ -51,6 +51,7 @@ export const createTables = async (db) => {
 			title VARCHAR(255) NOT NULL,
 			description TEXT,
 			image MEDIUMBLOB,
+			mimetype VARCHAR(20),
 			ngo_id int NOT NULL,
 			start_time TIMESTAMP NOT NULL,
 			end_time TIMESTAMP,

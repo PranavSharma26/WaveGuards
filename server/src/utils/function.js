@@ -140,6 +140,8 @@ export const isEventExist = async (title, ngo_id, db) => {
 export const insertEvent = async (
   title,
   description,
+  image,
+  mimetype,
   start_time,
   end_time,
   location,
@@ -151,12 +153,14 @@ export const insertEvent = async (
   db,
 ) => {
   const query = `
-    INSERT INTO events (title,description,start_time,end_time,location,city,state,country,locationLink,ngo_id)
-    VALUES (?,?,?,?,?,?,?,?,?,?)
+    INSERT INTO events (title,description,image,mimetype,start_time,end_time,location,city,state,country,locationLink,ngo_id)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
   `;
   await db.query(query, [
     title,
     description,
+    image,
+    mimetype,
     start_time,
     end_time,
     location,
@@ -283,4 +287,16 @@ export const isUserLiked = async (user_id, event_id, db) => {
   const query = `SELECT * FROM likes WHERE user_id = ? AND event_id = ?`
   const [rows] = await db.query(query,[user_id,event_id])
   return rows.length > 0 ? true : false
+}
+
+export const fetchImage = async (event_id, db) => {
+  const query = `SELECT image, mimetype FROM events WHERE id = ?`
+  const [rows] = await db.query(query,[event_id])
+  if(rows.length==0){
+    return null
+  }
+  return {
+    image: rows[0].image,
+    mimetype: rows[0].mimetype
+  }
 }

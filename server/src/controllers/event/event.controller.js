@@ -1,6 +1,7 @@
 import dbConnect from "../../config/db.js";
 import {
   deleteEvent,
+  fetchImage,
   fetchOngoingEvents,
   fetchPastEvents,
   fetchRating,
@@ -15,8 +16,20 @@ import {
   updateEvent,
 } from "../../utils/function.js";
 
-export const uploadImageController = (req, res) => {
-
+export const getImageController = async (req, res) => {
+  const db = await dbConnect()
+  try {
+    const event_id = req.params.id
+    const result = await fetchImage(event_id,db)
+    if(!result){
+      return res.status(404).json({success: false, message: "Image Not Found"})
+    }
+    res.set('Content-Type', result.mimetype);
+    return res.send(result.image);
+  } catch (error) {
+    console.log("Error fetching Image", error)
+    return res.status(500).json({success: false, message: "Internal server error"})
+  }
 }
 
 export const postEventController = async (req, res) => {
@@ -34,6 +47,8 @@ export const postEventController = async (req, res) => {
       locationLink,
       ngo_id,
     } = req.body;
+    const image = req.file?.buffer
+    const mimetype = req.file?.mimetype
     if (
       !title ||
       !description ||
@@ -55,6 +70,8 @@ export const postEventController = async (req, res) => {
     await insertEvent(
       title,
       description,
+      image,
+      mimetype,
       start_time,
       end_time,
       location,

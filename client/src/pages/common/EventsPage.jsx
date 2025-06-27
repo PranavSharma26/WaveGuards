@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navbar } from '../../components/Navbar';
 import EventCard from '../../components/events/EventCard';
 import { eventAuth } from '../../context/event/EventContext';
+import EventForm from '../../components/events/EventForm';
 
 const EventsPage = () => {
   const { upcomingEvents, ongoingEvents, pastEvents } = eventAuth();
-  const [activeTab, setActiveTab] = useState('upcoming'); 
-  
+  const [activeTab, setActiveTab] = useState(()=> { return localStorage.getItem('activeTab') }); 
+  const [showForm, setShowForm] = useState(false)
   const handlePostEvent = () => {
-    
+    setShowForm(true)
   };
+  const closeForm = () => {
+    setShowForm(false)
+  }
 
   const getEventsToDisplay = () => {
     if (activeTab === 'upcoming') return upcomingEvents || [];
@@ -17,6 +21,11 @@ const EventsPage = () => {
     if (activeTab === 'past') return pastEvents || [];
     return [];
   };
+
+  useEffect(()=>{
+    localStorage.setItem('activeTab',activeTab)
+    console.log("Changed")
+  },[activeTab])
 
   return (
     <>
@@ -61,6 +70,19 @@ const EventsPage = () => {
           </div>
         </div>
       </div>
+      {showForm && (
+  <div
+    className="fixed inset-0 bg-gray-500/30 backdrop-blur-md flex justify-center items-center p-2 z-50"
+    onClick={closeForm}
+  >
+    <div
+      onClick={e => e.stopPropagation()}
+      className="w-full max-w-lg"
+    >
+      <EventForm onClose={closeForm} />
+    </div>
+  </div>
+)}
     </>
   );
 };

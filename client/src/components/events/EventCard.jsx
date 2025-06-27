@@ -125,7 +125,7 @@ const EventCard = ({ event }) => {
       {role === "user" && event.status === "upcoming" && (
         <button
           onClick={() => navigate("/events/tech-meetup-2025")}
-          className="w-full mt-4 bg-gradient-to-r from-sky-600 to-sky-500 text-white py-2 rounded-lg font-semibold hover:from-sky-700 hover:to-sky-600 transition-all duration-200"
+          className="w-full mt-4 bg-gradient-to-r from-sky-700 via-sky-500 to-sky-400 text-white py-2 rounded-lg font-semibold hover:from-sky-800 hover:via-sky-600 hover:to-sky-500 transition-all duration-200"
         >
           Join Now
         </button>

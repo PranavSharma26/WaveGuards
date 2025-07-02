@@ -13,10 +13,11 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
 import { eventAuth } from "../../context/event/EventContext.jsx";
 import { backendURL } from "../../utils/getBackendURL.js";
+import toast from "react-hot-toast";
 
 const EventCard = ({ event }) => {
   const navigate = useNavigate();
-  const { user, userLoading } = userAuth();
+  const { user, userLoading, joinEvent } = userAuth();
   const { ngo, ngoLoading } = ngoAuth();
   const profile = user || ngo;
 
@@ -46,6 +47,15 @@ const EventCard = ({ event }) => {
     setLike(false)
     setLikeCount(likeCount-1)
     await unlikeEvent(profile.id, event.id)
+  }
+  const handleJoinEvent = async () => {
+    try {
+      if(confirm("Do you want to join the event?")){
+       await joinEvent(event.id) 
+      }
+    } catch (error) {
+      toast.error("Error Joining Event")
+    }
   }
 
   return (
@@ -107,7 +117,7 @@ const EventCard = ({ event }) => {
       <div className="flex justify-between items-center mt-4">
         <div className="flex items-center gap-2 text-blue-500 font-medium text-sm">
           <PeopleAltOutlinedIcon fontSize="small" />
-          <span>100 volunteers joined</span>
+          <span>{event.volunteers<=1 ? `${event.volunteers} volunteer joined`: `${event.volunteers} volunteers joined`}</span>
         </div>
         {event.status !== "upcoming" && (
           <div className="flex items-center gap-1 text-yellow-500 font-medium text-sm">
@@ -124,7 +134,7 @@ const EventCard = ({ event }) => {
       </div>
       {role === "user" && event.status === "upcoming" && (
         <button
-          onClick={() => navigate("/events/tech-meetup-2025")}
+          onClick={handleJoinEvent}
           className="w-full mt-4 bg-gradient-to-r from-sky-700 via-sky-500 to-sky-400 text-white py-2 rounded-lg font-semibold hover:from-sky-800 hover:via-sky-600 hover:to-sky-500 transition-all duration-200"
         >
           Join Now

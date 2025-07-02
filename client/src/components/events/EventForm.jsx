@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { ngoAuth } from "../../context/ngo/NgoContext";
 import { Country, State, City } from "country-state-city";
+import { backendURL } from "../../utils/getBackendURL";
+import toast from "react-hot-toast";
 
 const EventForm = ({ onClose }) => {
-	const {ngo} = ngoAuth();
+  const { ngo } = ngoAuth();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm();
   const [imagePreview, setImagePreview] = useState(null);
-
+  const [imageFile, setImageFile] = useState(null);
   const [allCountry, setAllCountry] = useState([]);
   const [allState, setAllState] = useState([]);
   const [allCity, setAllCity] = useState([]);
@@ -20,30 +23,42 @@ const EventForm = ({ onClose }) => {
   const [selectedState, setSelectedState] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
 
-  const onSubmit = (data) => {
-		const finalData = {
-			title: data.title,
-			description: data.description,
-			image: data.image,
-			start_time: data.start_time,
-			end_time: data.end_time,
-			location: data.location,
-			country: selectedCountry.name,
-			state: selectedState.name,
-			city: selectedCity.name,
-			locationLink: data.locationLink,
-			ngo_id:  ngo.id
-		}
-    console.log(finalData);
-    onClose();
+  const onSubmit = async (data) => {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("image", imageFile);
+    formData.append("start_time", data.start_time);
+    if (data.end_time) {
+      formData.append("end_time", data.end_time);
+    } else {
+      formData.append("end_time", null);
+    }
+    formData.append("location", data.location);
+    formData.append("country", selectedCountry?.name || "");
+    formData.append("state", selectedState?.name || "");
+    formData.append("city", selectedCity?.name || "");
+    formData.append("locationLink", data.locationLink);
+    formData.append("ngo_id", ngo.id);
+    
+    try {
+      const res = await axios.post(`${backendURL}/api/event/post`,formData,{withCredentials: true})
+      toast.success(res.data.message)
+      onClose();
+    }
+    catch (error) {
+      toast.error("Error Posting Event")
+    }
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImagePreview(URL.createObjectURL(file));
+      setImageFile(e.target.files[0]);
     } else {
       setImagePreview(null);
+      setImageFile(null);
     }
   };
 
@@ -202,7 +217,7 @@ const EventForm = ({ onClose }) => {
             </label>
             <select
               className="w-full"
-							defaultValue=""
+              defaultValue=""
               onChange={(e) => {
                 const selected = allCountry.find(
                   (c) => c.isoCode === e.target.value
@@ -212,7 +227,9 @@ const EventForm = ({ onClose }) => {
                 setSelectedCity(null);
               }}
             >
-							<option value="" disabled>Select Country</option>
+              <option value="" disabled>
+                Select Country
+              </option>
               {allCountry.map((country) => (
                 <option key={country.isoCode} value={country.isoCode}>
                   {country.name}
@@ -224,14 +241,16 @@ const EventForm = ({ onClose }) => {
             <label className="block font-semibold mb-1 text-gray-700">
               State
             </label>
-            <select className="w-full"
-						onChange={(e) => {
-							const selected = allState.find(
-								(s) => s.isoCode === e.target.value
-							);
-							setSelectedState(selected);
-							setSelectedCity(null);
-						}} >
+            <select
+              className="w-full"
+              onChange={(e) => {
+                const selected = allState.find(
+                  (s) => s.isoCode === e.target.value
+                );
+                setSelectedState(selected);
+                setSelectedCity(null);
+              }}
+            >
               {allState.map((state) => (
                 <option key={state.isoCode} value={state.isoCode}>
                   {state.name}
@@ -243,15 +262,18 @@ const EventForm = ({ onClose }) => {
             <label className="block font-semibold mb-1 text-gray-700">
               City
             </label>
-            <select className="w-full"
-						onChange={(e) => {
-							const selected = allCity.find(
-								(c) => c.name === e.target.value
-							);
-							setSelectedCity(selected);
-						}}>
+            <select
+              className="w-full"
+              onChange={(e) => {
+                const selected = allCity.find((c) => c.name === e.target.value);
+                setSelectedCity(selected);
+              }}
+            >
               {allCity.map((city) => (
-                <option key={`${city.name}-${city.latitude}-${city.longitude}`} value={city.isoCode}>
+                <option
+                  key={`${city.name}-${city.latitude}-${city.longitude}`}
+                  value={city.isoCode}
+                >
                   {city.name}
                 </option>
               ))}

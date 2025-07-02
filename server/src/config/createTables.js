@@ -54,7 +54,7 @@ export const createTables = async (db) => {
 			mimetype VARCHAR(20),
 			ngo_id int NOT NULL,
 			start_time TIMESTAMP NOT NULL,
-			end_time TIMESTAMP,
+			end_time TIMESTAMP DEFAULT NULL,
 			location VARCHAR(50),
 			city VARCHAR(30),
 			state VARCHAR(30),

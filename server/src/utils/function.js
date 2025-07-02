@@ -132,7 +132,7 @@ export const updateNGOAddress = async (
 };
 
 export const isEventExist = async (title, ngo_id, db) => {
-  const query = `SELECT * FROM events WHERE title = ? AND ngo_id = ?`;
+  const query = `SELECT * FROM events WHERE title = ? AND ngo_id = ? AND status = 'upcoming'`;
   const [rows] = await db.query(query, [title, ngo_id]);
   return rows.length > 0 ? true : false;
 };
@@ -152,24 +152,46 @@ export const insertEvent = async (
   ngo_id,
   db,
 ) => {
-  const query = `
+  let query
+  if(!end_time || end_time==="null"){
+    query = `
+    INSERT INTO events (title,description,image,mimetype,start_time,location,city,state,country,locationLink,ngo_id)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?)
+  `;
+    await db.query(query, [
+      title,
+      description,
+      image,
+      mimetype,
+      start_time,
+      location,
+      city,
+      state,
+      country,
+      locationLink,
+      ngo_id,
+    ]);
+  }
+  else {
+    query = `
     INSERT INTO events (title,description,image,mimetype,start_time,end_time,location,city,state,country,locationLink,ngo_id)
     VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
   `;
-  await db.query(query, [
-    title,
-    description,
-    image,
-    mimetype,
-    start_time,
-    end_time,
-    location,
-    city,
-    state,
-    country,
-    locationLink,
-    ngo_id,
-  ]);
+    await db.query(query, [
+      title,
+      description,
+      image,
+      mimetype,
+      start_time,
+      end_time,
+      location,
+      city,
+      state,
+      country,
+      locationLink,
+      ngo_id,
+    ]);
+  }
 };
 
 export const fetchUpcomingEvents = async (db) => {
@@ -299,4 +321,26 @@ export const fetchImage = async (event_id, db) => {
     image: rows[0].image,
     mimetype: rows[0].mimetype
   }
+}
+
+export const isRegistrationExist = async (user_id, event_id, db) =>{
+  const query = `SELECT * FROM registrations WHERE user_id = ? AND event_id = ?`
+  const [rows] = await db.query(query,[user_id, event_id])
+  return rows.length > 0 ? true : false
+}
+
+export const insertRegistration = async (user_id, event_id, db) => {
+  const query=`INSERT INTO registrations(user_id, event_id) VALUES(?,?)`
+  await db.query(query,[user_id, event_id])
+}
+
+export const fetchNoOfVolunteers = async (event_id, db) => {
+  const query = `SELECT COUNT(*) as count FROM registrations WHERE event_id = ?`;
+  const [rows] = await db.query(query,[event_id])
+  return rows.length > 0 ? rows[0].count : 0
+}
+
+export const deleteRegistration = async (user_id, event_id, db) => {
+  const query = `DELETE FROM registrations WHERE user_id = ? AND event_id = ?`
+  await db.query(query,[user_id, event_id])
 }

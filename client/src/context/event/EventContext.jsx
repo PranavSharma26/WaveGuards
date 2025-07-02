@@ -45,7 +45,7 @@ export const EventProvider = ({ children }) => {
 
   return (
     <EventContext.Provider
-      value={{ upcomingEvents, ongoingEvents, pastEvents, likeEvent, unlikeEvent }}
+      value={{ upcomingEvents, ongoingEvents, pastEvents, fetchEvents, likeEvent, unlikeEvent }}
     >
       {children}
     </EventContext.Provider>

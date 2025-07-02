@@ -1,14 +1,18 @@
 import dbConnect from "../../config/db.js";
 import {
   deleteEvent,
+  deleteRegistration,
   fetchImage,
+  fetchNoOfVolunteers,
   fetchOngoingEvents,
   fetchPastEvents,
   fetchRating,
   fetchTotalLikes,
   fetchUpcomingEvents,
   insertEvent,
+  insertRegistration,
   isEventExist,
+  isRegistrationExist,
   isUserLiked,
   likeEvent,
   rateEvent,
@@ -63,7 +67,8 @@ export const postEventController = async (req, res) => {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required" });
-    }
+      }
+
     if (await isEventExist(title, ngo_id, db)) {
       return res.status(400).json({ success: false, message: "Event Exists" });
     }
@@ -104,11 +109,13 @@ export const getEventsController = async (req, res) => {
         const like = await fetchTotalLikes(event.id,db)
         const rating = await fetchRating(event.id,db)
         const isLiked = await isUserLiked(user_id, event.id,db)
+        const volunteers = await fetchNoOfVolunteers(event.id, db)
         return {
           ...event,
           like: like || 0,
           rating: rating || 0,
-          isLiked: isLiked
+          isLiked: isLiked,
+          volunteers: volunteers
         };
       }));
     
@@ -332,3 +339,49 @@ export const fetchEventRatingController = async (req, res) => {
       .json({ success: false, message: "Internal server error" });
   }
 };
+
+export const joinEventController = async (req, res) => {
+  const db = await dbConnect();
+  try {
+    const {user_id, event_id} = req.body
+    if(await isRegistrationExist(user_id, event_id, db)){
+      return res.status(400).json({success: false, message: "Already Registered"})
+    }
+    await insertRegistration(user_id, event_id, db)
+    return res.status(201).json({success: true, message: "Registered Successfully"})
+  } catch (error) {
+    console.log("Error in joining event", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+}
+
+export const fetchTotalVolunteersController = async (req, res) => {
+  const db = await dbConnect()
+  try {
+    const event_id = req.params.id
+    const count = await fetchNoOfVolunteers(event_id,db)
+    return res.status(200).json({success: true, count ,message: "No. of volunteers fetched successfully"})
+  } catch (error) {
+    console.log("Error in fetching no. of volunteers", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+}
+
+export const unregisterEventController = async (req, res) => {
+  const db = await dbConnect()
+  try {
+    const user_id = req.params.user_id
+    const event_id = req.params.event_id
+    await deleteRegistration(user_id,event_id,db)
+    return res.status(200).json({success: true, message: "Event unregistered"})
+  } catch (error) {
+    console.log("Error in unregistering", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+}

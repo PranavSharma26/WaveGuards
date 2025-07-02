@@ -17,7 +17,7 @@ import toast from "react-hot-toast";
 
 const EventCard = ({ event }) => {
   const navigate = useNavigate();
-  const { user, userLoading, joinEvent } = userAuth();
+  const { user, userLoading, joinEvent, unregisterEvent } = userAuth();
   const { ngo, ngoLoading } = ngoAuth();
   const profile = user || ngo;
 
@@ -52,9 +52,20 @@ const EventCard = ({ event }) => {
     try {
       if(confirm("Do you want to join the event?")){
        await joinEvent(event.id) 
+       window.location.reload()
       }
     } catch (error) {
       toast.error("Error Joining Event")
+    }
+  }
+  const handleUnregisterEvent = async () => {
+    try {
+      if(confirm("Do you want to unregister from the event?")){
+       await unregisterEvent(event.id) 
+       window.location.reload()
+      }
+    } catch (error) {
+      toast.error("Error Unregistering Event")
     }
   }
 
@@ -133,12 +144,25 @@ const EventCard = ({ event }) => {
         </span>
       </div>
       {role === "user" && event.status === "upcoming" && (
-        <button
+        <>
+        { event.isJoined ? (
+          <button
+          onClick={handleUnregisterEvent}
+          className="w-full mt-4 bg-gradient-to-r from-green-600 via-green-400 to-green-300 text-white py-2 rounded-lg font-semibold  transition-all duration-200 
+          hover:from-red-600 hover:to-red-400 hover:via-red-400
+          hover:cursor-pointer"
+          >
+            Unregister
+          </button>
+        ):(
+          <button
           onClick={handleJoinEvent}
           className="w-full mt-4 bg-gradient-to-r from-sky-700 via-sky-500 to-sky-400 text-white py-2 rounded-lg font-semibold hover:from-sky-800 hover:via-sky-600 hover:to-sky-500 transition-all duration-200"
-        >
-          Join Now
-        </button>
+          >
+            Join Now
+          </button>
+        )}
+        </>
       )}
     </div>
   );

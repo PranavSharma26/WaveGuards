@@ -110,12 +110,14 @@ export const getEventsController = async (req, res) => {
         const rating = await fetchRating(event.id,db)
         const isLiked = await isUserLiked(user_id, event.id,db)
         const volunteers = await fetchNoOfVolunteers(event.id, db)
+        const isJoined = await isRegistrationExist(user_id,event.id,db)
         return {
           ...event,
           like: like || 0,
           rating: rating || 0,
           isLiked: isLiked,
-          volunteers: volunteers
+          volunteers: volunteers,
+          isJoined: isJoined
         };
       }));
     

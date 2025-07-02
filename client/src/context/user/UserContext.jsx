@@ -90,6 +90,18 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const unregisterEvent = async (event_id) => {
+    try {
+      const res = await axios.delete(
+        `${backendURL}/api/event/registration/delete/${user?.id}/${event_id}`,
+        { withCredentials: true }
+      );
+      toast.success(res.data.message)
+    } catch (error) {
+      toast.error("Error Unregistering Event");
+    }
+  };
+
   const logoutUser = async () => {
     try {
       const res = await axios.post(
@@ -135,6 +147,7 @@ export const UserProvider = ({ children }) => {
         updateUserName,
         updateUserAddress,
         joinEvent,
+        unregisterEvent,
         logoutUser,
       }}
     >

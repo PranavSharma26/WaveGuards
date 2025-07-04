@@ -344,3 +344,14 @@ export const deleteRegistration = async (user_id, event_id, db) => {
   const query = `DELETE FROM registrations WHERE user_id = ? AND event_id = ?`
   await db.query(query,[user_id, event_id])
 }
+
+export const fetchUserEvents = async (user_id, db) => {
+  const query = `SELECT event_id FROM registrations WHERE user_id = ?`
+  const [rows] = await db.query(query,[user_id]) 
+  const eventIds = rows.map(row=>row.event_id)
+  const placeholders = eventIds.map(()=>'?').join(',')
+  if(eventIds.length === 0) return []
+  const query2 = `SELECT * FROM events WHERE id in (${placeholders})`
+  const [eventRows] = await db.query(query2,eventIds)
+  return eventRows 
+}

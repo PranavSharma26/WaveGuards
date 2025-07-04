@@ -4,7 +4,7 @@ import { ngoAuth } from './NgoContext.jsx'
 const NgoProtectedRoutes = ({ children }) => {
   const { ngo, ngoLoading } = ngoAuth();
   if(ngoLoading) return null
-  if(!ngo) return <Navigate to="/login"/>
+  if(ngo.role!=="ngo") return <Navigate to="/login"/>
   return children
 };
 export default NgoProtectedRoutes;

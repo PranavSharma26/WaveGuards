@@ -10,6 +10,7 @@ export const UserProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
+  const [userEvents, setUserEvents] = useState([])
 
   const loginUser = (userData) => {
     setUser(userData);
@@ -116,6 +117,14 @@ export const UserProvider = ({ children }) => {
       toast.error("Error in Log out");
     }
   };
+
+  const fetchUserEvents = () => {
+    try {
+      
+    } catch (error) {
+      setUserEvents(null)
+    }
+  }
 
   useEffect(() => {
     const fetchUser = async () => {

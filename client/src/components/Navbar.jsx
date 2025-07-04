@@ -13,6 +13,7 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const { user, logoutUser } = userAuth();
   const { ngo, logoutNgo } = ngoAuth();
+  const profile = user || ngo
   const isUser = !!user
   const handleLoginClick = () => {
     navigate("/login");
@@ -26,7 +27,7 @@ export const Navbar = () => {
   };
   const handleEventsClick = () => {
     setShowDropdownMenu(false)
-    navigate(`/events`)
+    profile?.role==="user" ? navigate(`/user/my-events`) : navigate('/ngo/my-events')
   };
   const handleSettingsClick = () => {
     setShowDropdownMenu(false)
@@ -70,7 +71,7 @@ export const Navbar = () => {
             </button>
           )}
           {showDropdownMenu && (
-            <div className="text-black absolute top-10 right-0 border-1 rounded-lg bg-white shadow-xl px-1 border-gray-300">
+            <div className="text-black absolute top-10 right-0 border-1 rounded-lg bg-white shadow-xl px-1 border-gray-300 w-40">
               <ul className="text-gray-700 text-start">
                 <li className="my-1 hover:bg-gray-100 pr-3 pl-2 py-2 rounded-lg  hover:cursor-pointer flex items-center gap-3" onClick={handleAccountClick}>
                  <AccountCircleOutlinedIcon/>
@@ -78,7 +79,7 @@ export const Navbar = () => {
                 </li>
                 <li className="my-1 hover:bg-gray-100 pr-3 pl-2 py-2 rounded-lg  hover:cursor-pointer flex items-center gap-3" onClick={handleEventsClick}>
                  <EventIcon/>
-                 <p>Events</p>
+                 <p>My Events</p>
                 </li>
                 <li className="my-1 hover:bg-gray-100 pr-3 pl-2 py-2 rounded-lg  hover:cursor-pointer flex items-center gap-3" onClick={handleSettingsClick}>
                  <SettingsIcon/>

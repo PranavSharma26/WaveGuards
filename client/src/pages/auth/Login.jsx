@@ -94,7 +94,7 @@ const Login = () => {
           <div className="flex items-center gap-2">
             <input
               type="radio"
-              name="user"
+              name="ngo"
               id="ngo"
               checked={role === "ngo"}
               onChange={() => toggleRole("ngo")}

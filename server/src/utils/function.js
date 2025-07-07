@@ -243,6 +243,12 @@ export const fetchPastEvents = async (db) => {
   return rows.length > 0 ? rows : null;
 };
 
+export const fetchNgoNameFromID = async (ngo_id,db) => {
+  const query = `SELECT name FROM ngos WHERE id = ?`
+  const [rows] = await db.query(query,[ngo_id])
+  if(rows.length===0) return "-"
+  return rows[0].name
+}
 
 export const updateEvent = async (
   title,

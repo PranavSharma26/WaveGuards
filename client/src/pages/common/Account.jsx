@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Navbar } from "../components/Navbar";
-import { userAuth } from "../context/user/UserContext";
-import { ngoAuth } from "../context/ngo/NgoContext";
+import { Navbar } from "../../components/Navbar";
+import { userAuth } from "../../context/user/UserContext";
+import { ngoAuth } from "../../context/ngo/NgoContext";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
@@ -31,7 +31,7 @@ const Account = () => {
   if (userLoading || ngoLoading) {
     return (
       <div className="h-screen flex items-center justify-center">
-        <p className="text-gray-600 text-lg">Loading...</p>
+        <p className="text-gray-600 dark:text-gray-200 text-lg">Loading...</p>
       </div>
     );
   }
@@ -166,9 +166,9 @@ const Account = () => {
     <>
       <Navbar />
       <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-8 text-center">My Account</h1>
+        <h1 className="text-3xl font-bold mb-8 text-center dark:text-white">My Account</h1>
 
-        <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6 space-y-6">
+        <div className="bg-white dark:bg-gray-800 dark:text-white shadow-md rounded-xl p-6 space-y-6">
           <div className="flex flex-col md:flex-row gap-6 md:gap-10">
             <div className="flex flex-col items-center md:items-start">
               <img
@@ -357,7 +357,7 @@ const Account = () => {
                 name="bio"
                 id="bio"
                 value={bio || ""}
-                className="bg-gray-50 w-88 p-2 min-h-16 ring-teal-400 focus:ring-2 outline-none"
+                className="bg-gray-50 dark:bg-gray-700 dark:border-1 dark:border-gray-400 rounded-sm w-88 p-2 min-h-16 ring-teal-400 focus:ring-2 outline-none"
                 onChange={(e) => setBio(e.target.value)}
               />
             ) : (

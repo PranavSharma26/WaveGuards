@@ -83,8 +83,8 @@ const EventForm = ({ onClose }) => {
   }, [selectedState]);
 
   return (
-    <div className="p-8 px-1 bg-gradient-to-br from-white via-teal-50 to-white rounded-lg shadow-xl w-full max-w-lg mx-auto relative">
-      <p className="text-3xl sm:text-4xl font-extrabold text-center text-teal-700 mb-6">
+    <div className="p-8 px-1 bg-gradient-to-br from-white via-teal-50 to-white dark:from-gray-800 dark:to-gray-800 dark:via-gray-900 dark:text-white rounded-lg shadow-xl w-full max-w-lg mx-auto relative">
+      <p className="text-3xl sm:text-4xl font-extrabold text-center text-teal-700 dark:text-teal-400 mb-6">
         Post Event
       </p>
       <button
@@ -99,7 +99,7 @@ const EventForm = ({ onClose }) => {
         className="space-y-5 max-h-[80vh] overflow-y-auto px-5 "
       >
         <div>
-          <label className="block font-semibold mb-1 text-gray-700">
+          <label className="block font-semibold mb-1 text-gray-700 dark:text-gray-300">
             Event Title
           </label>
           <input
@@ -116,7 +116,7 @@ const EventForm = ({ onClose }) => {
         </div>
 
         <div>
-          <label className="block font-semibold mb-1 text-gray-700">
+          <label className="block font-semibold mb-1 text-gray-700 dark:text-gray-300">
             Description
           </label>
           <textarea
@@ -137,7 +137,7 @@ const EventForm = ({ onClose }) => {
         </div>
 
         <div>
-          <label className="block font-semibold mb-1 text-gray-700">
+          <label className="block font-semibold mb-1 text-gray-700 dark:text-gray-300">
             Choose Banner
           </label>
           <div className="flex items-center gap-4">
@@ -160,7 +160,7 @@ const EventForm = ({ onClose }) => {
         </div>
 
         <div>
-          <label className="block font-semibold mb-1 text-gray-700">
+          <label className="block font-semibold mb-1 text-gray-700 dark:text-gray-300">
             Start Date & Time
           </label>
           <input
@@ -180,7 +180,7 @@ const EventForm = ({ onClose }) => {
         </div>
 
         <div>
-          <label className="block font-semibold mb-1 text-gray-700">
+          <label className="block font-semibold mb-1 text-gray-700 dark:text-gray-300">
             End Date & Time (Expected)
           </label>
           <input
@@ -192,7 +192,7 @@ const EventForm = ({ onClose }) => {
         </div>
 
         <div>
-          <label className="block font-semibold mb-1 text-gray-700">
+          <label className="block font-semibold mb-1 text-gray-700 dark:text-gray-300">
             Location
           </label>
           <input
@@ -212,7 +212,7 @@ const EventForm = ({ onClose }) => {
 
         <div className="flex gap-2 ">
           <div className="flex flex-col items-center w-full">
-            <label className="block font-semibold mb-1 text-gray-700">
+            <label className="block font-semibold mb-1 text-gray-700 dark:text-gray-300">
               Country
             </label>
             <select
@@ -238,7 +238,7 @@ const EventForm = ({ onClose }) => {
             </select>
           </div>
           <div className="flex flex-col items-center w-full">
-            <label className="block font-semibold mb-1 text-gray-700">
+            <label className="block font-semibold mb-1 text-gray-700 dark:text-gray-300">
               State
             </label>
             <select
@@ -259,7 +259,7 @@ const EventForm = ({ onClose }) => {
             </select>
           </div>
           <div className="flex flex-col items-center w-full">
-            <label className="block font-semibold mb-1 text-gray-700">
+            <label className="block font-semibold mb-1 text-gray-700 dark:text-gray-300">
               City
             </label>
             <select
@@ -282,7 +282,7 @@ const EventForm = ({ onClose }) => {
         </div>
 
         <div>
-          <label className="block font-semibold mb-1 text-gray-700">
+          <label className="block font-semibold mb-1 text-gray-700 dark:text-gray-300">
             Location Link
           </label>
           <input

@@ -118,9 +118,25 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const fetchUserEvents = () => {
+  const deleteUser = async () => {
     try {
-      
+      const res = await axios.post(
+        `${backendURL}/api/delete-user`,
+        {},
+        { withCredentials: true }
+      );
+      setUser(null);
+      toast.success("User Deleted");
+      navigate("/");
+    } catch (error) {
+      toast.error("Error in Log out");
+    }
+  };
+
+  const fetchUserEvents = async () => {
+    try {
+      const res = await axios.get(`${backendURL}/api/user/${user?.id}/my-events`,{},{withCredentials: true})
+      setUserEvents(res.data.events)
     } catch (error) {
       setUserEvents(null)
     }
@@ -157,7 +173,10 @@ export const UserProvider = ({ children }) => {
         updateUserAddress,
         joinEvent,
         unregisterEvent,
+        userEvents,
+        fetchUserEvents,
         logoutUser,
+        deleteUser
       }}
     >
       {children}

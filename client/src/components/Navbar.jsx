@@ -51,7 +51,7 @@ export const Navbar = () => {
   },[])
 
   return (
-    <div className="p-4 bg-sky-500 text-white">
+    <div className="p-4 bg-sky-500 text-white dark:bg-sky-600">
       <div className="flex justify-between">
         <div className="flex gap-2 font-bold text-2xl tracking-wide font-stretch-105% hover:cursor-pointer" onClick={()=>navigate('/')}>
           <p>WaveGuard</p>
@@ -71,21 +71,21 @@ export const Navbar = () => {
             </button>
           )}
           {showDropdownMenu && (
-            <div className="text-black absolute top-10 right-0 border-1 rounded-lg bg-white shadow-xl px-1 border-gray-300 w-40">
-              <ul className="text-gray-700 text-start">
-                <li className="my-1 hover:bg-gray-100 pr-3 pl-2 py-2 rounded-lg  hover:cursor-pointer flex items-center gap-3" onClick={handleAccountClick}>
+            <div className="text-black absolute top-10 right-0 border-1 rounded-lg bg-white shadow-xl px-1 border-gray-300 w-40 dark:bg-gray-800">
+              <ul className="text-gray-700 dark:text-gray-300 text-start">
+                <li className="my-1 hover:bg-gray-100 dark:hover:bg-gray-700 pr-3 pl-2 py-2 rounded-lg  hover:cursor-pointer flex items-center gap-3" onClick={handleAccountClick}>
                  <AccountCircleOutlinedIcon/>
                  <p>Account</p>
                 </li>
-                <li className="my-1 hover:bg-gray-100 pr-3 pl-2 py-2 rounded-lg  hover:cursor-pointer flex items-center gap-3" onClick={handleEventsClick}>
+                <li className="my-1 hover:bg-gray-100 dark:hover:bg-gray-700 pr-3 pl-2 py-2 rounded-lg  hover:cursor-pointer flex items-center gap-3" onClick={handleEventsClick}>
                  <EventIcon/>
                  <p>My Events</p>
                 </li>
-                <li className="my-1 hover:bg-gray-100 pr-3 pl-2 py-2 rounded-lg  hover:cursor-pointer flex items-center gap-3" onClick={handleSettingsClick}>
+                <li className="my-1 hover:bg-gray-100 dark:hover:bg-gray-700 pr-3 pl-2 py-2 rounded-lg  hover:cursor-pointer flex items-center gap-3" onClick={handleSettingsClick}>
                  <SettingsIcon/>
                  <p>Settings</p>
                 </li>
-                <li className="my-1 hover:bg-gray-100 pr-3 pl-2 py-2 rounded-lg  hover:cursor-pointer flex items-center gap-3" onClick={handleLogoutClick}>
+                <li className="my-1 hover:bg-gray-100 dark:hover:bg-gray-700 pr-3 pl-2 py-2 rounded-lg  hover:cursor-pointer flex items-center gap-3" onClick={handleLogoutClick}>
                  <LogoutIcon/>
                  <p>Logout</p>
                 </li>

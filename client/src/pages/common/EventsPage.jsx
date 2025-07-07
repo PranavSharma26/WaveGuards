@@ -47,10 +47,10 @@ const EventsPage = () => {
   return (
     <>
       {/* <Navbar /> */}
-      <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-16">
+      <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-16 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold text-gray-800">Events</h1>
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">Events</h1>
             {ngo?.role==="ngo" && (
               <button
                 className="bg-teal-500 text-white font-bold p-2 rounded-xl hover:bg-teal-600 transition-colors"

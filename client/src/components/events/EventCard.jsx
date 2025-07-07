@@ -58,6 +58,13 @@ const EventCard = ({ event }) => {
       toast.error("Error Joining Event")
     }
   }
+  const handleLocationLink = (link) => {
+    const normalizedLink = link.startsWith("http://") || link.startsWith("https://")
+      ? link
+      : `https://${link}`;
+    new URL(normalizedLink)
+    window.open(normalizedLink)
+  }
   const handleUnregisterEvent = async () => {
     try {
       if(confirm("Do you want to unregister from the event?")){
@@ -70,7 +77,7 @@ const EventCard = ({ event }) => {
   }
 
   return (
-    <div className="w-full sm:min-w-[300px] sm:max-w-md mx-auto bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6 space-y-4 border border-gray-100 min-h-[300px]">
+    <div className="w-full sm:min-w-[300px] sm:max-w-md mx-auto bg-white dark:bg-gray-800 dark:text-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6 space-y-4 border border-gray-100 min-h-[300px]">
   <div className="-mt-6 -mx-6">
     <img
       src={
@@ -83,8 +90,8 @@ const EventCard = ({ event }) => {
     />
   </div>
       <div className="relative">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">{event.title}</h2>
-        <p className="text-gray-600 mt-1 line-clamp-3 min-h-[75px]">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">{event.title}</h2>
+        <p className="text-gray-600 dark:text-gray-200 mt-1 line-clamp-3 min-h-[75px]">
           {event.description}
         </p>
         {role === "user" ? (
@@ -94,18 +101,18 @@ const EventCard = ({ event }) => {
             ) : (
               <FavoriteBorderIcon className=" text-red-500 hover:cursor-pointer" onClick={handleLikeEvent}/>
             )}
-            <p className="text-gray-500">{likeCount}</p>
+            <p className="text-gray-500 dark:text-gray-200">{likeCount}</p>
           </div>
         ) : (
           <div className="absolute top-0 right-0 text-[12px] text-center">
             <FavoriteBorderIcon className=" text-red-500" />
-            <p className="text-gray-500">{likeCount}</p>
+            <p className="text-gray-500 dark:text-gray-200">{likeCount}</p>
           </div>
         )}
       </div>
 
-      <div className="space-y-2 text-sm text-gray-700">
-        <div className="flex items-center gap-2">
+      <div className="space-y-2 text-sm text-gray-700 dark:text-gray-200 " >
+        <div className="flex items-center gap-2 hover:cursor-pointer hover:text-sky-600" onClick={()=>handleLocationLink(event.locationLink)}>
           <LocationOnOutlinedIcon fontSize="small" className="text-blue-400" />
           <span>{event.location}</span>
         </div>
@@ -126,7 +133,7 @@ const EventCard = ({ event }) => {
       </div>
 
       <div className="flex justify-between items-center mt-4">
-        <div className="flex items-center gap-2 text-blue-500 font-medium text-sm">
+        <div className="flex items-center gap-2 text-blue-500 dark:text-sky-400 font-medium text-sm">
           <PeopleAltOutlinedIcon fontSize="small" />
           <span>{event.volunteers<=1 ? `${event.volunteers} volunteer joined`: `${event.volunteers} volunteers joined`}</span>
         </div>
@@ -137,10 +144,10 @@ const EventCard = ({ event }) => {
           </div>
         )}
       </div>
-      <div className="text-sm text-gray-500 flex gap-2">
+      <div className="text-sm text-gray-500 dark:text-gray-200 flex gap-2">
         <p>Organized By:</p>
-        <span className="hover:cursor-pointer hover:underline hover:text-gray-700">
-          Beach Trust Ltd.
+        <span className="hover:cursor-pointer hover:underline hover:text-gray-700 dark:hover:text-gray-300">
+          {event.ngoName}
         </span>
       </div>
       {role === "user" && event.status === "upcoming" && (

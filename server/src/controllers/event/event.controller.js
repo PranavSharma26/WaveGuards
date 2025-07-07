@@ -3,6 +3,7 @@ import {
   deleteEvent,
   deleteRegistration,
   fetchImage,
+  fetchNgoNameFromID,
   fetchNoOfVolunteers,
   fetchOngoingEvents,
   fetchPastEvents,
@@ -111,13 +112,15 @@ export const getEventsController = async (req, res) => {
         const isLiked = await isUserLiked(user_id, event.id,db)
         const volunteers = await fetchNoOfVolunteers(event.id, db)
         const isJoined = await isRegistrationExist(user_id,event.id,db)
+        const ngoName = await fetchNgoNameFromID(event.ngo_id,db)
         return {
           ...event,
           like: like || 0,
           rating: rating || 0,
           isLiked: isLiked,
           volunteers: volunteers,
-          isJoined: isJoined
+          isJoined: isJoined,
+          ngoName: ngoName
         };
       }));
     

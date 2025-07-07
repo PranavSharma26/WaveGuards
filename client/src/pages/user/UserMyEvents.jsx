@@ -4,14 +4,12 @@ import { userAuth } from '../../context/user/UserContext'
 import EventCard from "../../components/events/EventCard"
 const UserMyEvents = () => {
 
-  const {user, userEvents, fetchUserEvents} = userAuth()
+  const {userEvents, fetchUserEvents} = userAuth()
 
   useEffect(()=>{
     fetchUserEvents()
   },[])
 
-  useEffect(()=>{
-  },[userEvents])
 
   return (
     <>

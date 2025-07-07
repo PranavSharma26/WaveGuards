@@ -1,5 +1,5 @@
 import dbConnect from '../../config/db.js'
-import { fetchNoOfVolunteers, fetchRating, fetchTotalLikes, fetchUserEvents, isRegistrationExist, isUserLiked } from '../../utils/function.js'
+import { fetchNgoNameFromID, fetchNoOfVolunteers, fetchRating, fetchTotalLikes, fetchUserEvents, isRegistrationExist, isUserLiked } from '../../utils/function.js'
 
 export const  getUserEventsController = async (req, res) => {
     const db = await dbConnect()
@@ -13,13 +13,15 @@ export const  getUserEventsController = async (req, res) => {
               const isLiked = await isUserLiked(user_id, event.id,db)
               const volunteers = await fetchNoOfVolunteers(event.id, db)
               const isJoined = await isRegistrationExist(user_id,event.id,db)
+              const ngoName = await fetchNgoNameFromID(event.ngo_id,db)
               return {
                 ...event,
                 like: like || 0,
                 rating: rating || 0,
                 isLiked: isLiked,
                 volunteers: volunteers,
-                isJoined: isJoined
+                isJoined: isJoined,
+                ngoName: ngoName
               };
             }));
           

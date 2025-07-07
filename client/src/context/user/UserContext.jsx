@@ -138,7 +138,7 @@ export const UserProvider = ({ children }) => {
       const res = await axios.get(`${backendURL}/api/user/${user?.id}/my-events`,{},{withCredentials: true})
       setUserEvents(res.data.events)
     } catch (error) {
-      setUserEvents(null)
+      setUserEvents([])
     }
   }
 

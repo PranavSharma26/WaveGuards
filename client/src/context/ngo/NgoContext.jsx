@@ -10,6 +10,7 @@ export const NgoProvider = ({ children }) => {
   const navigate = useNavigate()
   const [ngo, setNgo] = useState(null);
   const [ngoLoading, setNgoLoading] = useState(true);
+  const [ngoEvents, setNgoEvents] = useState([])
 
   const loginNgo = (ngoData) => {
     setNgo(ngoData);
@@ -66,6 +67,15 @@ export const NgoProvider = ({ children }) => {
     }
   };
 
+  const fetchNgoEvents = async () => {
+    try {
+      const res = await axios.get(`${backendURL}/api/ngo/${ngo?.id}/my-events`,{},{withCredentials: true})
+      setNgoEvents(res.data.events)
+    } catch (error) {
+      setNgoEvents([])
+    }
+  }
+
   useEffect(() => {
     const fetchNgo = async () => {
       try {
@@ -85,7 +95,7 @@ export const NgoProvider = ({ children }) => {
   }, []);
 
   return (
-    <NgoContext.Provider value={{ ngo, setNgo, ngoLoading, loginNgo, updateNgoBio, updateNgoPhone, updateNgoName, updateNgoAddress, logoutNgo }}>
+    <NgoContext.Provider value={{ ngo, setNgo, ngoLoading, loginNgo, updateNgoBio, updateNgoPhone, updateNgoName, updateNgoAddress, ngoEvents, fetchNgoEvents, logoutNgo }}>
       {children}
     </NgoContext.Provider>
   );

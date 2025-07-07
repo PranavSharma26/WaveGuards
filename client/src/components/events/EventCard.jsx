@@ -90,7 +90,7 @@ const EventCard = ({ event }) => {
     />
   </div>
       <div className="relative">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">{event.title}</h2>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2 mr-6">{event.title}</h2>
         <p className="text-gray-600 dark:text-gray-200 mt-1 line-clamp-3 min-h-[75px]">
           {event.description}
         </p>

@@ -22,7 +22,7 @@ import ChangePasswordAfterLogin from "./pages/common/ChangePasswordAfterLogin";
 function App() {
   useEffect(() => {
     const darkMode = localStorage.getItem("mode");
-    if (darkMode) {
+    if (darkMode==="true") {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");

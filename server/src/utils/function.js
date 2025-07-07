@@ -361,3 +361,9 @@ export const fetchUserEvents = async (user_id, db) => {
   const [eventRows] = await db.query(query2,eventIds)
   return eventRows 
 }
+
+export const fetchNgoEvents = async (ngo_id, db) => {
+  const query = `SELECT * FROM events WHERE ngo_id = ?`
+  const [rows] = await db.query(query,[ngo_id]) 
+  return rows.length > 0 ? rows : [] 
+}

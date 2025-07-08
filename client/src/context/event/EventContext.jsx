@@ -26,6 +26,14 @@ export const EventProvider = ({ children }) => {
     }
   }
 
+  const deleteEvent = async (event_id) => {
+    try {
+      const res = await axios.delete(`${backendURL}/api/event/delete/${event_id}`,{})
+    } catch (error) {
+      console.log("Error Deleting Event")
+    }
+  }
+
   const fetchEvents = async () => {
     try {
       const res = await axios.get(`${backendURL}/api/event/get`, {
@@ -45,7 +53,7 @@ export const EventProvider = ({ children }) => {
 
   return (
     <EventContext.Provider
-      value={{ upcomingEvents, ongoingEvents, pastEvents, fetchEvents, likeEvent, unlikeEvent }}
+      value={{ upcomingEvents, ongoingEvents, pastEvents, fetchEvents, likeEvent, unlikeEvent, deleteEvent }}
     >
       {children}
     </EventContext.Provider>

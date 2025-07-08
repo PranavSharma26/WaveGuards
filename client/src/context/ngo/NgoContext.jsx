@@ -7,13 +7,12 @@ import { useNavigate } from "react-router-dom";
 const NgoContext = createContext();
 
 export const NgoProvider = ({ children }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [ngo, setNgo] = useState(null);
   const [ngoLoading, setNgoLoading] = useState(true);
-  const [ngoEvents, setNgoEvents] = useState([])
-  const [ngoUpcomingEvents, setNgoUpcomingEvents] = useState([])
-  const [ngoOngoingEvents, setNgoOngoingEvents] = useState([])
-  const [ngoPastEvents, setNgoPastEvents] = useState([])
+  const [ngoUpcomingEvents, setNgoUpcomingEvents] = useState([]);
+  const [ngoOngoingEvents, setNgoOngoingEvents] = useState([]);
+  const [ngoPastEvents, setNgoPastEvents] = useState([]);
 
   const loginNgo = (ngoData) => {
     setNgo(ngoData);
@@ -21,39 +20,62 @@ export const NgoProvider = ({ children }) => {
 
   const updateNgoName = async (newName) => {
     try {
-      const res = await axios.patch(`${backendURL}/api/update/name`,{id: ngo.id, newName: newName, role: "ngo"},{withCredentials: true})
-      toast.success(res.data.message)
+      const res = await axios.patch(
+        `${backendURL}/api/update/name`,
+        { id: ngo.id, newName: newName, role: "ngo" },
+        { withCredentials: true }
+      );
+      toast.success(res.data.message);
     } catch (error) {
-      toast.error(error || "Error Updating Bio")
+      toast.error(error || "Error Updating Bio");
     }
-  }
+  };
 
   const updateNgoBio = async (newBio) => {
     try {
-      const res = await axios.patch(`${backendURL}/api/update/bio`,{id: ngo.id, newBio: newBio, role: "ngo"},{withCredentials: true})
-      toast.success(res.data.message)
+      const res = await axios.patch(
+        `${backendURL}/api/update/bio`,
+        { id: ngo.id, newBio: newBio, role: "ngo" },
+        { withCredentials: true }
+      );
+      toast.success(res.data.message);
     } catch (error) {
-      toast.error(error || "Error Updating Bio")
+      toast.error(error || "Error Updating Bio");
     }
-  }
+  };
 
   const updateNgoPhone = async (newPhone) => {
     try {
-      const res = await axios.patch(`${backendURL}/api/update/phoneNumber`,{id: ngo.id, newPhoneNumber: newPhone, role: "ngo"},{withCredentials: true})
-      toast.success(res.data.message)
+      const res = await axios.patch(
+        `${backendURL}/api/update/phoneNumber`,
+        { id: ngo.id, newPhoneNumber: newPhone, role: "ngo" },
+        { withCredentials: true }
+      );
+      toast.success(res.data.message);
     } catch (error) {
-      toast.error(error || "Error Updating Phone")
+      toast.error(error || "Error Updating Phone");
     }
-  }
+  };
 
   const updateNgoAddress = async (newAddress) => {
     try {
-      const res = await axios.patch(`${backendURL}/api/update/address`,{id: ngo.id, address: newAddress.address, city: newAddress.city, state: newAddress.state, country: newAddress.country, role: "ngo"},{withCredentials: true})
-      toast.success("Address Updated Successfully")
+      const res = await axios.patch(
+        `${backendURL}/api/update/address`,
+        {
+          id: ngo.id,
+          address: newAddress.address,
+          city: newAddress.city,
+          state: newAddress.state,
+          country: newAddress.country,
+          role: "ngo",
+        },
+        { withCredentials: true }
+      );
+      toast.success("Address Updated Successfully");
     } catch (error) {
-      toast.error(error || "Error Updating Location")
+      toast.error(error || "Error Updating Location");
     }
-  }
+  };
 
   const logoutNgo = async () => {
     try {
@@ -64,7 +86,7 @@ export const NgoProvider = ({ children }) => {
       );
       setNgo(null);
       toast.success("Logged Out");
-      navigate('/')
+      navigate("/");
     } catch (error) {
       toast.error("Error in Log out");
     }
@@ -72,18 +94,20 @@ export const NgoProvider = ({ children }) => {
 
   const fetchNgoEvents = async () => {
     try {
-      const res = await axios.get(`${backendURL}/api/ngo/${ngo?.id}/my-events`,{},{withCredentials: true})
-      setNgoEvents(res.data.events)
-      setNgoUpcomingEvents(res.data.upcomingEvents)
-      setNgoOngoingEvents(res.data.ongoingEvents)
-      setNgoPastEvents(res.data.pastEvents)
+      const res = await axios.get(
+        `${backendURL}/api/ngo/${ngo?.id}/my-events`,
+        {},
+        { withCredentials: true }
+      );
+      setNgoUpcomingEvents(res.data.upcomingEvents);
+      setNgoOngoingEvents(res.data.ongoingEvents);
+      setNgoPastEvents(res.data.pastEvents);
     } catch (error) {
-      setNgoEvents([])
-      setNgoUpcomingEvents([])
-      setNgoOngoingEvents([])
-      setNgoPastEvents([])
+      setNgoUpcomingEvents([]);
+      setNgoOngoingEvents([]);
+      setNgoPastEvents([]);
     }
-  }
+  };
 
   useEffect(() => {
     const fetchNgo = async () => {
@@ -104,7 +128,23 @@ export const NgoProvider = ({ children }) => {
   }, []);
 
   return (
-    <NgoContext.Provider value={{ ngo, setNgo, ngoLoading, loginNgo, updateNgoBio, updateNgoPhone, updateNgoName, updateNgoAddress, ngoEvents, ngoUpcomingEvents, ngoOngoingEvents, ngoPastEvents, fetchNgoEvents, logoutNgo }}>
+    <NgoContext.Provider
+      value={{
+        ngo,
+        setNgo,
+        ngoLoading,
+        loginNgo,
+        updateNgoBio,
+        updateNgoPhone,
+        updateNgoName,
+        updateNgoAddress,
+        ngoUpcomingEvents,
+        ngoOngoingEvents,
+        ngoPastEvents,
+        fetchNgoEvents,
+        logoutNgo,
+      }}
+    >
       {children}
     </NgoContext.Provider>
   );

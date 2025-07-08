@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { userAuth } from "../../context/user/UserContext";
 import { ngoAuth } from "../../context/ngo/NgoContext";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
@@ -6,10 +6,12 @@ import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import StarIcon from "@mui/icons-material/Star";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getDate, getTime } from "../../utils/function.js";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 import { eventAuth } from "../../context/event/EventContext.jsx";
 import { backendURL } from "../../utils/getBackendURL.js";
@@ -34,72 +36,101 @@ const EventCard = ({ event }) => {
 
   if (!profile) return null;
   const role = profile.role;
-  const {likeEvent, unlikeEvent} = eventAuth()
+  const location = useLocation()
+  const { likeEvent, unlikeEvent, deleteEvent } = eventAuth();
   const [like, setLike] = useState(event.isLiked);
-  const [likeCount, setLikeCount] = useState(event.like)
+  const [likeCount, setLikeCount] = useState(event.like);
   // TODO : time gap of 10 sec. before sending request to server
   const handleLikeEvent = async () => {
-    setLike(true)
-    setLikeCount(likeCount+1)
-    await likeEvent(profile.id, event.id)
-  }
+    setLike(true);
+    setLikeCount(likeCount + 1);
+    await likeEvent(profile.id, event.id);
+  };
   const handleUnlikeEvent = async () => {
-    setLike(false)
-    setLikeCount(likeCount-1)
-    await unlikeEvent(profile.id, event.id)
-  }
+    setLike(false);
+    setLikeCount(likeCount - 1);
+    await unlikeEvent(profile.id, event.id);
+  };
   const handleJoinEvent = async () => {
     try {
-      if(confirm("Do you want to join the event?")){
-       await joinEvent(event.id) 
-       window.location.reload()
+      if (confirm("Do you want to join the event?")) {
+        await joinEvent(event.id);
+        window.location.reload();
       }
     } catch (error) {
-      toast.error("Error Joining Event")
+      toast.error("Error Joining Event");
     }
-  }
+  };
   const handleLocationLink = (link) => {
-    const normalizedLink = link.startsWith("http://") || link.startsWith("https://")
-      ? link
-      : `https://${link}`;
-    new URL(normalizedLink)
-    window.open(normalizedLink)
-  }
+    const normalizedLink =
+      link.startsWith("http://") || link.startsWith("https://")
+        ? link
+        : `https://${link}`;
+    new URL(normalizedLink);
+    window.open(normalizedLink);
+  };
   const handleUnregisterEvent = async () => {
     try {
-      if(confirm("Do you want to unregister from the event?")){
-       await unregisterEvent(event.id) 
-       window.location.reload()
+      if (confirm("Do you want to unregister from the event?")) {
+        await unregisterEvent(event.id);
+        window.location.reload();
       }
     } catch (error) {
-      toast.error("Error Unregistering Event")
+      toast.error("Error Unregistering Event");
+    }
+  };
+
+  const handleDeleteEvent = async() => {
+    try {
+      if(confirm("Do you really want to delete this event?")){
+        await deleteEvent(event.id)
+        window.location.reload();
+        toast.success("Event Deleted Successfully")
+      }
+    } catch (error) {
+      toast.error("Error Deleting Event")
     }
   }
 
   return (
     <div className="w-full sm:min-w-[300px] sm:max-w-md mx-auto bg-white dark:bg-gray-800 dark:text-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6 space-y-4 border border-gray-100 min-h-[300px]">
-  <div className="-mt-6 -mx-6">
-    <img
-      src={
-        event.image
-          ? `${backendURL}/api/event/image/${event.id}`
-          : "https://www.texasdisposal.com/wp-content/uploads/2024/10/ocean-pollution-23.jpg"
-      }
-      alt={event.title}
-      className="w-full h-48 object-cover rounded-t-2xl"
-    />
-  </div>
+      <div className="-mt-6 -mx-6 relative">
+        <img
+          src={
+            event.image
+              ? `${backendURL}/api/event/image/${event.id}`
+              : "https://www.texasdisposal.com/wp-content/uploads/2024/10/ocean-pollution-23.jpg"
+          }
+          alt={event.title}
+          className="w-full h-48 object-cover rounded-t-2xl"
+        />
+        {role === "ngo" && location.pathname==="/ngo/my-events" && 
+          ngo.id === event.ngo_id &&
+          event.status === "upcoming" && (
+            <div className="absolute top-2 right-2 bg-gray-800 rounded-full p-1 opacity-90 hover:cursor-pointer hover:opacity-100" onClick={handleDeleteEvent}>
+              <DeleteIcon className="text-red-500  opacity-90" />
+            </div>
+          )}
+      </div>
       <div className="relative">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2 mr-6">{event.title}</h2>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2 mr-6">
+          {event.title}
+        </h2>
         <p className="text-gray-600 dark:text-gray-200 mt-1 line-clamp-3 min-h-[75px]">
           {event.description}
         </p>
         {role === "user" ? (
           <div className="absolute top-0 right-0 text-[12px] text-center">
             {like ? (
-              <FavoriteIcon className=" text-red-500 hover:cursor-pointer" onClick={handleUnlikeEvent}/>
+              <FavoriteIcon
+                className=" text-red-500 hover:cursor-pointer"
+                onClick={handleUnlikeEvent}
+              />
             ) : (
-              <FavoriteBorderIcon className=" text-red-500 hover:cursor-pointer" onClick={handleLikeEvent}/>
+              <FavoriteBorderIcon
+                className=" text-red-500 hover:cursor-pointer"
+                onClick={handleLikeEvent}
+              />
             )}
             <p className="text-gray-500 dark:text-gray-200">{likeCount}</p>
           </div>
@@ -111,8 +142,11 @@ const EventCard = ({ event }) => {
         )}
       </div>
 
-      <div className="space-y-2 text-sm text-gray-700 dark:text-gray-200 " >
-        <div className="flex items-center gap-2 hover:cursor-pointer hover:text-sky-600" onClick={()=>handleLocationLink(event.locationLink)}>
+      <div className="space-y-2 text-sm text-gray-700 dark:text-gray-200 ">
+        <div
+          className="flex items-center gap-2 hover:cursor-pointer hover:text-sky-600"
+          onClick={() => handleLocationLink(event.locationLink)}
+        >
           <LocationOnOutlinedIcon fontSize="small" className="text-blue-400" />
           <span>{event.location}</span>
         </div>
@@ -135,40 +169,46 @@ const EventCard = ({ event }) => {
       <div className="flex justify-between items-center mt-4">
         <div className="flex items-center gap-2 text-blue-500 dark:text-sky-400 font-medium text-sm">
           <PeopleAltOutlinedIcon fontSize="small" />
-          <span>{event.volunteers<=1 ? `${event.volunteers} volunteer joined`: `${event.volunteers} volunteers joined`}</span>
+          <span>
+            {event.volunteers <= 1
+              ? `${event.volunteers} volunteer joined`
+              : `${event.volunteers} volunteers joined`}
+          </span>
         </div>
         {event.status !== "upcoming" && (
           <div className="flex items-center gap-1 text-yellow-500 font-medium text-sm">
             <StarIcon fontSize="small" />
-            <span>{event.rating || '-'}</span>
+            <span>{event.rating || "-"}</span>
           </div>
         )}
       </div>
-      <div className="text-sm text-gray-500 dark:text-gray-200 flex gap-2">
-        <p>Organized By:</p>
-        <span className="hover:cursor-pointer hover:underline hover:text-gray-700 dark:hover:text-gray-300">
-          {event.ngoName}
-        </span>
+      <div className="flex justify-between items-center">
+        <div className="text-sm text-gray-500 dark:text-gray-200 flex gap-2 truncate">
+          <p>Organized By:</p>
+          <span className="hover:cursor-pointer hover:underline hover:text-gray-700 dark:hover:text-gray-300 truncate">
+            {event.ngoName}
+          </span>
+        </div>
       </div>
       {role === "user" && event.status === "upcoming" && (
         <>
-        { event.isJoined ? (
-          <button
-          onClick={handleUnregisterEvent}
-          className="w-full mt-4 bg-gradient-to-r from-green-600 via-green-400 to-green-300 text-white py-2 rounded-lg font-semibold  transition-all duration-200 
+          {event.isJoined ? (
+            <button
+              onClick={handleUnregisterEvent}
+              className="w-full mt-4 bg-gradient-to-r from-green-600 via-green-400 to-green-300 text-white py-2 rounded-lg font-semibold  transition-all duration-200 
           hover:from-red-600 hover:to-red-400 hover:via-red-400
           hover:cursor-pointer"
-          >
-            Unregister
-          </button>
-        ):(
-          <button
-          onClick={handleJoinEvent}
-          className="w-full mt-4 bg-gradient-to-r from-sky-700 via-sky-500 to-sky-400 text-white py-2 rounded-lg font-semibold hover:from-sky-800 hover:via-sky-600 hover:to-sky-500 transition-all duration-200"
-          >
-            Join Now
-          </button>
-        )}
+            >
+              Unregister
+            </button>
+          ) : (
+            <button
+              onClick={handleJoinEvent}
+              className="w-full mt-4 bg-gradient-to-r from-sky-700 via-sky-500 to-sky-400 text-white py-2 rounded-lg font-semibold hover:from-sky-800 hover:via-sky-600 hover:to-sky-500 transition-all duration-200"
+            >
+              Join Now
+            </button>
+          )}
         </>
       )}
     </div>

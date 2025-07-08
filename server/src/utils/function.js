@@ -253,6 +253,8 @@ export const fetchNgoNameFromID = async (ngo_id,db) => {
 export const updateEvent = async (
   title,
   description,
+  image,
+  mimetype,
   start_time,
   end_time,
   location,
@@ -263,20 +265,41 @@ export const updateEvent = async (
   event_id,
   db,
 ) => {
-  const query = `
-    UPDATE events set title=?,description=?,start_time=?,end_time=?,location=?,city=?,state=?,country=?,locationLink=? WHERE id = ?`;
-  await db.query(query, [
-    title,
-    description,
-    start_time,
-    end_time,
-    location,
-    city,
-    state,
-    country,
-    locationLink,
-    event_id
-  ]);
+  if(!end_time || end_time==="null"){
+    const query = `
+      UPDATE events set title=?,description=?, image=?, mimetype=?,start_time=?,location=?,city=?,state=?,country=?,locationLink=? WHERE id = ?`;
+    await db.query(query, [
+      title,
+      description,
+      image,
+      mimetype,
+      start_time,
+      location,
+      city,
+      state,
+      country,
+      locationLink,
+      event_id
+    ]);
+  }
+  else{
+    const query = `
+      UPDATE events set title=?,description=?, image=?, mimetype=?,start_time=?,end_time=?,location=?,city=?,state=?,country=?,locationLink=? WHERE id = ?`;
+    await db.query(query, [
+      title,
+      description,
+      image,
+      mimetype,
+      start_time,
+      end_time,
+      location,
+      city,
+      state,
+      country,
+      locationLink,
+      event_id
+    ]);
+  }
 };
 
 export const deleteEvent = async (id,db) => {

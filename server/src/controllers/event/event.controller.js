@@ -207,6 +207,8 @@ export const updateEventController = async (req, res) => {
       locationLink,
       event_id,
     } = req.body;
+    const image = req.file?.buffer
+    const mimetype = req.file?.mimetype
     if (
       !title ||
       !description ||
@@ -225,6 +227,8 @@ export const updateEventController = async (req, res) => {
     await updateEvent(
       title,
       description,
+      image,
+      mimetype,
       start_time,
       end_time,
       location,

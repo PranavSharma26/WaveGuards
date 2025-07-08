@@ -4,7 +4,6 @@ import { userAuth } from "../../context/user/UserContext";
 import EventCard from "../../components/events/EventCard";
 const UserMyEvents = () => {
   const {
-    userEvents,
     userUpcomingEvents,
     userOngoingEvents,
     userPastEvents,

@@ -23,7 +23,7 @@ router.get('/event/fetchRating/:id',fetchEventRatingController)
 router.get('/event/volunteers/:id', fetchTotalVolunteersController)
 
 // PATCH
-router.patch('/event/update',updateEventController)
+router.patch('/event/update',upload.single('image'),updateEventController)
 
 // DELETE
 router.delete('/event/delete/:id',deleteEventController)

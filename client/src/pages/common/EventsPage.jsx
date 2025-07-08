@@ -12,11 +12,11 @@ const EventsPage = () => {
   });
   
   const { ngo, ngoLoading } = ngoAuth();
-  
   const [showForm, setShowForm] = useState(false);
   const handlePostEvent = () => {
     setShowForm(true);
   };
+  
   const closeForm = () => {
     setShowForm(false);
   };

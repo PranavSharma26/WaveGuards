@@ -71,7 +71,7 @@ export const Navbar = () => {
             </button>
           )}
           {showDropdownMenu && (
-            <div className="text-black absolute top-10 right-0 border-1 rounded-lg bg-white shadow-xl px-1 border-gray-300 w-40 dark:bg-gray-800">
+            <div className="text-black absolute top-10 right-0 border-1 rounded-lg bg-white shadow-xl px-1 border-gray-300 w-40 dark:bg-gray-800 z-50">
               <ul className="text-gray-700 dark:text-gray-300 text-start">
                 <li className="my-1 hover:bg-gray-100 dark:hover:bg-gray-700 pr-3 pl-2 py-2 rounded-lg  hover:cursor-pointer flex items-center gap-3" onClick={handleAccountClick}>
                  <AccountCircleOutlinedIcon/>

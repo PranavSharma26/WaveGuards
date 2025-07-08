@@ -10,7 +10,6 @@ export const UserProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
-  const [userEvents, setUserEvents] = useState([])
   const [userUpcomingEvents, setUserUpcomingEvents] = useState([])
   const [userOngoingEvents, setUserOngoingEvents] = useState([])
   const [userPastEvents, setUserPastEvents] = useState([])
@@ -139,12 +138,10 @@ export const UserProvider = ({ children }) => {
   const fetchUserEvents = async () => {
     try {
       const res = await axios.get(`${backendURL}/api/user/${user?.id}/my-events`,{},{withCredentials: true})
-      setUserEvents(res.data.events)
       setUserUpcomingEvents(res.data.upcomingEvents)
       setUserOngoingEvents(res.data.ongoingEvents)
       setUserPastEvents(res.data.pastEvents)
     } catch (error) {
-      setUserEvents([])
       setUserUpcomingEvents([])
       setUserOngoingEvents([])
       setUserPastEvents([])
@@ -182,7 +179,6 @@ export const UserProvider = ({ children }) => {
         updateUserAddress,
         joinEvent,
         unregisterEvent,
-        userEvents,
         userUpcomingEvents,
         userOngoingEvents,
         userPastEvents,

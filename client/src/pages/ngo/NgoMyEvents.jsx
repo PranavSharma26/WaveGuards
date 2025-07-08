@@ -1,15 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar } from "../../components/Navbar";
 import { ngoAuth } from "../../context/ngo/NgoContext";
+import EditIcon from '@mui/icons-material/Edit';
 import EventCard from "../../components/events/EventCard";
+import EventEditForm from "../../components/events/EventEditForm"
 const NgoMyEvents = () => {
+  const [showEditForm, setShowEditForm] = useState(false)
+  const [selectedEvent,setSelectedEvent] = useState(null)
   const {
-    ngoEvents,
     ngoUpcomingEvents,
     ngoOngoingEvents,
     ngoPastEvents,
     fetchNgoEvents,
   } = ngoAuth();
+
+  const closeForm = () => {
+    setShowEditForm(false)
+  }
+
+  const toggleEditFormVisibility = (event) => {
+    setSelectedEvent(event)
+    setShowEditForm((prev)=>!prev)
+  }
 
   useEffect(() => {
     fetchNgoEvents();
@@ -51,7 +63,16 @@ const NgoMyEvents = () => {
           ) : (
             <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {ngoUpcomingEvents.map((event, index) => (
-                <EventCard key={index} event={event} />
+                <div key={index} className="relative">
+                  <EventCard event={event} />
+                  <div className="absolute right-4 bottom-4 font-bold flex text-teal-600 hover:text-teal-700 
+                  dark:text-teal-400 dark:hover:text-teal-600
+                  hover:cursor-pointer hover:scale-105 transition-transform" onClick={()=>toggleEditFormVisibility(event)}>
+                    <EditIcon/>
+                    <p>Edit</p>
+                  </div>
+                </div>
+
               ))}
             </div>
           )}
@@ -70,6 +91,16 @@ const NgoMyEvents = () => {
           )}
         </div>
       </div>
+      {showEditForm && (
+        <div
+        className="fixed inset-0 bg-gray-500/30 backdrop-blur-md flex justify-center items-center p-2 z-50"
+        onClick={closeForm}
+      >
+        <div onClick={(e) => e.stopPropagation()} className="w-full max-w-lg">
+          <EventEditForm event={selectedEvent} onClose={closeForm} />
+        </div>
+      </div>
+      )}
     </>
   );
 };

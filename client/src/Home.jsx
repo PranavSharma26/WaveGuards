@@ -21,7 +21,7 @@ function Home() {
       {user || ngo ? (
         <EventsPage />
       ) : (
-        <div className="min-h-screen bg-blue-50 flex flex-col items-center justify-center px-6 py-12 text-gray-800">
+        <div className="min-h-screen bg-blue-50 flex flex-col items-center pt-20 px-6 py-12 text-gray-800">
           <div className="max-w-4xl text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-blue-800 mb-6">
               🌊 Waveguards

@@ -30,11 +30,19 @@ export const getNgoEventsController = async (req, res) => {
       );
     };
     const eventWithStats = await addStatsToEvent(events || []);
+
+    const ngoUpcomingEvents = eventWithStats.filter((e)=>e.status==="upcoming")
+    const ngoOngoingEvents = eventWithStats.filter((e)=>e.status==="ongoing")
+    const ngoPastEvents = eventWithStats.filter((e)=>e.status==="past")
+
     return res
       .status(200)
       .json({
         success: true,
         events: eventWithStats,
+        upcomingEvents: ngoUpcomingEvents,
+        ongoingEvents: ngoOngoingEvents,
+        pastEvents: ngoPastEvents,
         message: "Ngo Events Fetched Successfully",
       });
   } catch (error) {

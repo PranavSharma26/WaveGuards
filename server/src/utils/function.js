@@ -357,13 +357,13 @@ export const fetchUserEvents = async (user_id, db) => {
   const eventIds = rows.map(row=>row.event_id)
   const placeholders = eventIds.map(()=>'?').join(',')
   if(eventIds.length === 0) return []
-  const query2 = `SELECT * FROM events WHERE id in (${placeholders})`
+  const query2 = `SELECT * FROM events WHERE id in (${placeholders}) ORDER BY start_time DESC`
   const [eventRows] = await db.query(query2,eventIds)
   return eventRows 
 }
 
 export const fetchNgoEvents = async (ngo_id, db) => {
-  const query = `SELECT * FROM events WHERE ngo_id = ?`
+  const query = `SELECT * FROM events WHERE ngo_id = ? ORDER BY start_time DESC`
   const [rows] = await db.query(query,[ngo_id]) 
   return rows.length > 0 ? rows : [] 
 }

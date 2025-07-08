@@ -11,6 +11,9 @@ export const NgoProvider = ({ children }) => {
   const [ngo, setNgo] = useState(null);
   const [ngoLoading, setNgoLoading] = useState(true);
   const [ngoEvents, setNgoEvents] = useState([])
+  const [ngoUpcomingEvents, setNgoUpcomingEvents] = useState([])
+  const [ngoOngoingEvents, setNgoOngoingEvents] = useState([])
+  const [ngoPastEvents, setNgoPastEvents] = useState([])
 
   const loginNgo = (ngoData) => {
     setNgo(ngoData);
@@ -71,8 +74,14 @@ export const NgoProvider = ({ children }) => {
     try {
       const res = await axios.get(`${backendURL}/api/ngo/${ngo?.id}/my-events`,{},{withCredentials: true})
       setNgoEvents(res.data.events)
+      setNgoUpcomingEvents(res.data.upcomingEvents)
+      setNgoOngoingEvents(res.data.ongoingEvents)
+      setNgoPastEvents(res.data.pastEvents)
     } catch (error) {
       setNgoEvents([])
+      setNgoUpcomingEvents([])
+      setNgoOngoingEvents([])
+      setNgoPastEvents([])
     }
   }
 
@@ -95,7 +104,7 @@ export const NgoProvider = ({ children }) => {
   }, []);
 
   return (
-    <NgoContext.Provider value={{ ngo, setNgo, ngoLoading, loginNgo, updateNgoBio, updateNgoPhone, updateNgoName, updateNgoAddress, ngoEvents, fetchNgoEvents, logoutNgo }}>
+    <NgoContext.Provider value={{ ngo, setNgo, ngoLoading, loginNgo, updateNgoBio, updateNgoPhone, updateNgoName, updateNgoAddress, ngoEvents, ngoUpcomingEvents, ngoOngoingEvents, ngoPastEvents, fetchNgoEvents, logoutNgo }}>
       {children}
     </NgoContext.Provider>
   );

@@ -3,7 +3,7 @@ import axios from "axios";
 export const sendVerificationEmail = async (email ,otp) => {
   try {
     if (!email || !otp) {
-      return res.status(400).json({ message: "All fields are required" });
+      throw new Error("Email and OTP are required.");
     }
     const payload = {
       sender: {
@@ -56,7 +56,7 @@ export const sendVerificationEmail = async (email ,otp) => {
     );
     return response.data
   } catch (error) {
-    console.error("Error sending verification email:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    console.error("Error sending verification email:", error.response?.data || error);
+    throw new Error("Failed to send verification email");
   }
 };

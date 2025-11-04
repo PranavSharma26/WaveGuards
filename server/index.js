@@ -14,7 +14,7 @@ dotenv.config()
 const port = process.env.PORT || 3000
 const app = express()
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "*",
     credentials: true
 }))
 app.use(express.json())
@@ -25,8 +25,16 @@ app.use('/api',updateFieldRoutes)
 app.use('/api',eventRoutes)
 app.use('/api',userRoutes)
 app.use('/api',ngoRoutes)
+app.get("/", (req, res) => {
+    res.send("Backend Live");
+  });
 
-app.listen(port, async ()=>{
-    await dbConnect()
-    console.log(`Listening on port ${port}`)
-})
+// app.listen(port, async ()=>{
+//     await dbConnect()
+//     console.log(`Listening on port ${port}`)
+// })
+  
+app.listen(3000, "0.0.0.0", () => {
+    console.log("Server running on port 3000");
+});
+  

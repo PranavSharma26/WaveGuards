@@ -54,6 +54,7 @@ const dbConnect = async () => {
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME, // <-- must match your RDS DB name
+      port: process.env.DB_PORT,
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,

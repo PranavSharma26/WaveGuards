@@ -16,7 +16,8 @@ const app = express()
 app.use(cors({
     origin: [
         "http://localhost:5173",
-        "http://51.21.245.146"
+        "http://51.21.245.146",
+        "https://waveguards.vercel.app"
     ],
     credentials: true
 }))
@@ -37,7 +38,7 @@ app.get("/", (req, res) => {
 //     console.log(`Listening on port ${port}`)
 // })
   
-app.listen(3000, "0.0.0.0", async () => {
+app.listen(port, "0.0.0.0", async () => {
     await dbConnect();
     console.log("Server running on port 3000");
 });

@@ -1,30 +1,66 @@
-export const getDate = (s) => {
-    const date = new Date(s);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
+// export const getDate = (s) => {
+//     const date = new Date(s);
+//     const day = date.getDate().toString().padStart(2, '0');
+//     const month = (date.getMonth() + 1).toString().padStart(2, '0');
+//     const year = date.getFullYear();
+//     return `${day}/${month}/${year}`;
+//   };
+
+// export const getTime = (s) => {
+//     const date = new Date(s);
+//     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+// };  
 
 export const getTime = (s) => {
-    const date = new Date(s);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-};  
+  const date = new Date(s);
+  return date.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+    timeZone: 'UTC',
+  }) + ' UTC';
+};
+
+export const getDate = (s) => {
+  const date = new Date(s);
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const year = date.getUTCFullYear();
+  return `${day}/${month}/${year}`;
+};
 
 export const toDatetimeLocal = (dateStr) => {
   if (!dateStr) return "";
   const date = new Date(dateStr);
-  // Pad month, day, hour, minute
   const pad = (n) => n.toString().padStart(2, "0");
   return (
-    date.getFullYear() +
+    date.getUTCFullYear() +
     "-" +
-    pad(date.getMonth() + 1) +
+    pad(date.getUTCMonth() + 1) +
     "-" +
-    pad(date.getDate()) +
+    pad(date.getUTCDate()) +
     "T" +
-    pad(date.getHours()) +
+    pad(date.getUTCHours()) +
     ":" +
-    pad(date.getMinutes())
+    pad(date.getUTCMinutes())
   );
-}
+};
+
+
+// export const toDatetimeLocal = (dateStr) => {
+//   if (!dateStr) return "";
+//   const date = new Date(dateStr);
+//   // Pad month, day, hour, minute
+//   const pad = (n) => n.toString().padStart(2, "0");
+//   return (
+//     date.getFullYear() +
+//     "-" +
+//     pad(date.getMonth() + 1) +
+//     "-" +
+//     pad(date.getDate()) +
+//     "T" +
+//     pad(date.getHours()) +
+//     ":" +
+//     pad(date.getMinutes())
+//   );
+// }

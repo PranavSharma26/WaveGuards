@@ -11,22 +11,22 @@
 //     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 // };  
 
-export const getTime = (s) => {
-  const date = new Date(s);
-  return date.toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-    timeZone: 'UTC',
-  }) + ' UTC';
-};
-
 export const getDate = (s) => {
   const date = new Date(s);
   const day = String(date.getUTCDate()).padStart(2, '0');
   const month = String(date.getUTCMonth() + 1).padStart(2, '0');
   const year = date.getUTCFullYear();
   return `${day}/${month}/${year}`;
+};
+
+export const getTime = (s) => {
+  const date = new Date(s);
+  return date.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+    timeZone: 'UTC', 
+  });
 };
 
 export const toDatetimeLocal = (dateStr) => {
@@ -45,6 +45,7 @@ export const toDatetimeLocal = (dateStr) => {
     pad(date.getUTCMinutes())
   );
 };
+
 
 
 // export const toDatetimeLocal = (dateStr) => {

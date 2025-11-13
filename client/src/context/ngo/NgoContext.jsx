@@ -96,7 +96,6 @@ export const NgoProvider = ({ children }) => {
     try {
       const res = await axios.get(
         `${backendURL}/api/ngo/${ngo?.id}/my-events`,
-        {},
         { withCredentials: true }
       );
       setNgoUpcomingEvents(res.data.upcomingEvents);

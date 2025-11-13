@@ -137,7 +137,10 @@ export const UserProvider = ({ children }) => {
 
   const fetchUserEvents = async () => {
     try {
-      const res = await axios.get(`${backendURL}/api/user/${user?.id}/my-events`,{},{withCredentials: true})
+      const res = await axios.get(
+        `${backendURL}/api/user/${user?.id}/my-events`,
+        { withCredentials: true }      
+      );
       setUserUpcomingEvents(res.data.upcomingEvents)
       setUserOngoingEvents(res.data.ongoingEvents)
       setUserPastEvents(res.data.pastEvents)
